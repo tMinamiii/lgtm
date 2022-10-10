@@ -19,33 +19,19 @@ import (
 	"golang.org/x/image/font/gofont/gobold"
 )
 
-func fontSizeMain(imageWidth, imageHeight int) float64 {
-	// 1920 x 1080 = 300pt
-	large := func() int {
-		if imageHeight > imageWidth {
-			return imageHeight
-		}
-		return imageWidth
-	}()
-	return float64(large) / 6
+func fontSizeMain(imageWidth int) float64 {
+	return float64(imageWidth) / 6
 }
 
-func fontSizeSub(imageWidth, imageHeight int) float64 {
-	// 1920 x 1080 = 80pt
-	large := func() int {
-		if imageHeight > imageWidth {
-			return imageHeight
-		}
-		return imageWidth
-	}()
-	return float64(large) / 22
+func fontSizeSub(imageWidth int) float64 {
+	return float64(imageWidth) / 22
 }
 
-func draw(bgImage image.Image, text, textColor string, fontSize, x, y float64) (image.Image, error) {
-	imgWidth := bgImage.Bounds().Dx()
-	imgHeight := bgImage.Bounds().Dy()
+func drawText(img image.Image, text, textColor string, fontSize, x, y float64) (image.Image, error) {
+	imgWidth := img.Bounds().Dx()
+	imgHeight := img.Bounds().Dy()
 	dc := gg.NewContext(imgWidth, imgHeight)
-	dc.DrawImage(bgImage, 0, 0)
+	dc.DrawImage(img, 0, 0)
 
 	ft, err := truetype.Parse(gobold.TTF)
 	if err != nil {
@@ -73,20 +59,20 @@ func draw(bgImage image.Image, text, textColor string, fontSize, x, y float64) (
 	return dc.Image(), nil
 }
 
-func drawMainText(bgImage image.Image, text, textColor string) (image.Image, error) {
-	imgWidth := bgImage.Bounds().Dx()
-	imgHeight := bgImage.Bounds().Dy()
+func drawMainText(img image.Image, text, textColor string) (image.Image, error) {
+	imgWidth := img.Bounds().Dx()
+	imgHeight := img.Bounds().Dy()
 	x := float64(imgWidth / 2)
 	y := float64((imgHeight / 2) - (imgHeight / 20))
-	return draw(bgImage, text, textColor, fontSizeMain(imgWidth, imgHeight), x, y)
+	return drawText(img, text, textColor, fontSizeMain(imgWidth), x, y)
 }
 
-func drawSubText(bgImage image.Image, text, textColor string) (image.Image, error) {
-	imgWidth := bgImage.Bounds().Dx()
-	imgHeight := bgImage.Bounds().Dy()
+func drawSubText(img image.Image, text, textColor string) (image.Image, error) {
+	imgWidth := img.Bounds().Dx()
+	imgHeight := img.Bounds().Dy()
 	x := float64(imgWidth / 2)
 	y := float64(imgHeight - (imgHeight / 3))
-	return draw(bgImage, text, textColor, fontSizeSub(imgWidth, imgHeight), x, y)
+	return drawText(img, text, textColor, fontSizeSub(imgWidth), x, y)
 }
 
 func readImage(path string) (image.Image, error) {
@@ -99,17 +85,17 @@ func readImage(path string) (image.Image, error) {
 	ext := filepath.Ext(path)
 	switch ext {
 	case ".jpeg", ".jpg":
-		image, err := jpeg.Decode(file)
+		img, err := jpeg.Decode(file)
 		if err != nil {
 			return nil, errors.Wrapf(err, "failed to decode image: %s", err.Error())
 		}
-		return image, nil
+		return img, nil
 	case ".png":
-		image, err := png.Decode(file)
+		img, err := png.Decode(file)
 		if err != nil {
 			return nil, errors.Wrapf(err, "failed to decode image: %s", err.Error())
 		}
-		return image, nil
+		return img, nil
 	}
 	return nil, fmt.Errorf("invalid image extension = %s", ext)
 }
@@ -157,25 +143,25 @@ func main() {
 		textColor = &w
 	}
 
-	baseImage, err := readImage(*path)
+	img, err := readImage(*path)
 	if err != nil {
 		log.Fatal(err)
 		os.Exit(1)
 	}
 
-	baseImage, err = drawMainText(baseImage, "L G T M", *textColor)
+	img, err = drawMainText(img, "L G T M", *textColor)
 	if err != nil {
 		log.Fatal(err)
 		os.Exit(1)
 	}
 
-	baseImage, err = drawSubText(baseImage, "L o o k s   G o o d   T o   M e", *textColor)
+	img, err = drawSubText(img, "L o o k s   G o o d   T o   M e", *textColor)
 	if err != nil {
 		log.Fatal(err)
 		os.Exit(1)
 	}
 
-	err = writeImage(baseImage, *path)
+	err = writeImage(img, *path)
 	if err != nil {
 		log.Fatal(err)
 		os.Exit(1)

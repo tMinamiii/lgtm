@@ -2,7 +2,7 @@
 
 Compatible image types are below extensions.
 
-- jpeg, jpg
+- jpeg
 - png
 
 ## Installation
