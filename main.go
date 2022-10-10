@@ -1,13 +1,10 @@
 package main
 
 import (
-	"bufio"
 	"flag"
 	"fmt"
 	"image"
 	"image/color"
-	"image/jpeg"
-	"image/png"
 	"log"
 	"os"
 	"path/filepath"
@@ -90,11 +87,6 @@ func format(path string) (string, error) {
 }
 
 func readImage(path string) (image.Image, string, error) {
-	file, err := os.Open(path)
-	if err != nil {
-		return nil, "", errors.Wrapf(err, "failed to open file: %s", err.Error())
-	}
-
 	ext, err := format(path)
 	if err != nil {
 		return nil, "", err
@@ -102,15 +94,15 @@ func readImage(path string) (image.Image, string, error) {
 
 	switch ext {
 	case "jpeg":
-		img, err := jpeg.Decode(file)
+		img, err := gg.LoadJPG(path)
 		if err != nil {
 			return nil, "", errors.Wrapf(err, "failed to decode image: %s", err.Error())
 		}
 		return img, ext, nil
 	case "png":
-		img, err := png.Decode(file)
+		img, err := gg.LoadPNG(path)
 		if err != nil {
-			return nil, "", errors.Wrapf(err, "failed to decode image: %s", err.Error())
+			return nil, "", errors.Wrapf(err, "failed to load image: %s", err.Error())
 		}
 		return img, ext, nil
 	}
@@ -122,23 +114,15 @@ func writeImage(img image.Image, ext, path string) error {
 	name := strings.Split(filename, ".")[0]
 	newFilename := fmt.Sprintf("%s-lgtm.%s", name, ext)
 
-	newFile, err := os.Create(newFilename)
-	if err != nil {
-		return errors.Wrapf(err, "failed to create file: %s", err.Error())
-	}
-	defer newFile.Close()
-
-	b := bufio.NewWriter(newFile)
-
 	switch ext {
 	case "jpeg":
-		if err := jpeg.Encode(b, img, &jpeg.Options{Quality: 100}); err != nil {
-			return errors.Wrapf(err, "failed to encode image: %s", err.Error())
+		if err := gg.SaveJPG(newFilename, img, 100); err != nil {
+			return errors.Wrapf(err, "failed to save jpg image: %s", err.Error())
 		}
 		return nil
 	case "png":
-		if err := png.Encode(b, img); err != nil {
-			return errors.Wrapf(err, "failed to encode image: %s", err.Error())
+		if err := gg.SavePNG(newFilename, img); err != nil {
+			return errors.Wrapf(err, "failed to save png image: %s", err.Error())
 		}
 		return nil
 	}
