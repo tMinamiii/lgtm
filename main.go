@@ -130,7 +130,7 @@ func writeImage(img image.Image, path string) error {
 
 	switch ext {
 	case ".jpeg", ".jpg":
-		if err := jpeg.Encode(b, img, nil); err != nil {
+		if err := jpeg.Encode(b, img, &jpeg.Options{Quality: 100}); err != nil {
 			return errors.Wrapf(err, "failed to encode image: %s", err.Error())
 		}
 		return nil
