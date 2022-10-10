@@ -10,6 +10,7 @@ import (
 	"path/filepath"
 	"strings"
 
+	"github.com/disintegration/imaging"
 	"github.com/fogleman/gg"
 	"github.com/golang/freetype/truetype"
 	"github.com/pkg/errors"
@@ -78,35 +79,24 @@ func format(path string) (string, error) {
 		return "", errors.Wrapf(err, "failed to open file: %s", err.Error())
 	}
 
-	config, format, err := image.DecodeConfig(f)
+	_, format, err := image.DecodeConfig(f)
 	if err != nil {
 		return "", errors.Wrapf(err, "failed to read decode config: %s", err.Error())
 	}
-	fmt.Printf("image decode config = %+v, format = %s\n", config, format)
+
 	return format, nil
 }
 
 func readImage(path string) (image.Image, string, error) {
+	img, err := imaging.Open(path, imaging.AutoOrientation(true))
+	if err != nil {
+		return nil, "", errors.Wrapf(err, "failed to open image: %s", err.Error())
+	}
 	ext, err := format(path)
 	if err != nil {
 		return nil, "", err
 	}
-
-	switch ext {
-	case "jpeg":
-		img, err := gg.LoadJPG(path)
-		if err != nil {
-			return nil, "", errors.Wrapf(err, "failed to decode image: %s", err.Error())
-		}
-		return img, ext, nil
-	case "png":
-		img, err := gg.LoadPNG(path)
-		if err != nil {
-			return nil, "", errors.Wrapf(err, "failed to load image: %s", err.Error())
-		}
-		return img, ext, nil
-	}
-	return nil, "", fmt.Errorf("invalid image extension = %s", ext)
+	return img, ext, nil
 }
 
 func writeImage(img image.Image, ext, path string) error {
@@ -114,19 +104,10 @@ func writeImage(img image.Image, ext, path string) error {
 	name := strings.Split(filename, ".")[0]
 	newFilename := fmt.Sprintf("%s-lgtm.%s", name, ext)
 
-	switch ext {
-	case "jpeg":
-		if err := gg.SaveJPG(newFilename, img, 100); err != nil {
-			return errors.Wrapf(err, "failed to save jpg image: %s", err.Error())
-		}
-		return nil
-	case "png":
-		if err := gg.SavePNG(newFilename, img); err != nil {
-			return errors.Wrapf(err, "failed to save png image: %s", err.Error())
-		}
-		return nil
+	if err := imaging.Save(img, newFilename); err != nil {
+		return errors.Wrapf(err, "failed to save image: %s", err.Error())
 	}
-	return fmt.Errorf("invalid image extension = %s", ext)
+	return nil
 }
 
 func main() {

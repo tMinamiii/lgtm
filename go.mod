@@ -8,3 +8,5 @@ require (
 	github.com/pkg/errors v0.9.1
 	golang.org/x/image v0.0.0-20220902085622-e7cb96979f69
 )
+
+require github.com/disintegration/imaging v1.6.2
