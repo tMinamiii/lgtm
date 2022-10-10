@@ -2,7 +2,7 @@
 
 LGoTM embeds `LGTM` string in image.
 
-![lunch-lgtm](https://user-images.githubusercontent.com/31730505/194919185-341db7fd-5265-4daf-a842-8706b64604a5.jpg)
+![lunch-lgtm](https://user-images.githubusercontent.com/31730505/194919314-fc3b9fb9-fd47-46bf-a91a-2d148caf50b3.jpg)
 
 ## Installation
 
