@@ -17,12 +17,12 @@ import (
 	"golang.org/x/image/font/gofont/gobold"
 )
 
-func fontSizeMain(imageWidth int) float64 {
-	return float64(imageWidth) / 6
+func fontSizeMain(imageWidth int, text string) float64 {
+	return float64(imageWidth*7) / float64(6*len(text))
 }
 
-func fontSizeSub(imageWidth int) float64 {
-	return float64(imageWidth) / 22
+func fontSizeSub(imageWidth int, text string) float64 {
+	return float64(imageWidth*32) / float64(22*len(text))
 }
 
 func drawText(img image.Image, text, textColor string, fontSize, x, y float64) (image.Image, error) {
@@ -62,7 +62,7 @@ func drawMainText(img image.Image, text, textColor string) (image.Image, error) 
 	imgHeight := img.Bounds().Dy()
 	x := float64(imgWidth / 2)
 	y := float64((imgHeight / 2) - (imgHeight / 20))
-	return drawText(img, text, textColor, fontSizeMain(imgWidth), x, y)
+	return drawText(img, text, textColor, fontSizeMain(imgWidth, text), x, y)
 }
 
 func drawSubText(img image.Image, text, textColor string) (image.Image, error) {
@@ -70,7 +70,7 @@ func drawSubText(img image.Image, text, textColor string) (image.Image, error) {
 	imgHeight := img.Bounds().Dy()
 	x := float64(imgWidth / 2)
 	y := float64(imgHeight - (imgHeight / 3))
-	return drawText(img, text, textColor, fontSizeSub(imgWidth), x, y)
+	return drawText(img, text, textColor, fontSizeSub(imgWidth, text), x, y)
 }
 
 func format(path string) (string, error) {
@@ -111,6 +111,8 @@ func writeImage(img image.Image, ext, path string) error {
 }
 
 func main() {
+	mainText := flag.String("main", "L G T M", "main text")
+	subText := flag.String("sub", "L o o k s   G o o d   T o   M e", "sub text")
 	path := flag.String("i", "", "image path")
 	textColor := flag.String("c", "white", "color 'white' or 'black'")
 	flag.Parse()
@@ -130,13 +132,13 @@ func main() {
 		os.Exit(1)
 	}
 
-	img, err = drawMainText(img, "L G T M", *textColor)
+	img, err = drawMainText(img, *mainText, *textColor)
 	if err != nil {
 		log.Fatal(err)
 		os.Exit(1)
 	}
 
-	img, err = drawSubText(img, "L o o k s   G o o d   T o   M e", *textColor)
+	img, err = drawSubText(img, *subText, *textColor)
 	if err != nil {
 		log.Fatal(err)
 		os.Exit(1)

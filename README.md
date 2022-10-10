@@ -22,6 +22,10 @@ Usage of lgotm:
         color 'white' or 'black' (default "white")
   -i string
         image path
+  -main string
+        main text (default "L G T M")
+  -sub string
+        sub text (default "L o o k s   G o o d   T o   M e")
 ```
 
 ### Example
