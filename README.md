@@ -1,9 +1,8 @@
 # LGoTM
 
-Compatible image types are below extensions.
+LGoTM embeds `LGTM` string in image.
 
-- jpeg
-- png
+![lunch-lgtm](https://user-images.githubusercontent.com/31730505/194919185-341db7fd-5265-4daf-a842-8706b64604a5.jpg)
 
 ## Installation
 
