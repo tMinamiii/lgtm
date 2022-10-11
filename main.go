@@ -1,6 +1,7 @@
 package main
 
 import (
+	_ "embed"
 	"flag"
 	"fmt"
 	"image"
@@ -14,17 +15,19 @@ import (
 
 	"github.com/disintegration/imaging"
 	"github.com/fogleman/gg"
-	"github.com/golang/freetype/truetype"
 	"github.com/pkg/errors"
-	"golang.org/x/image/font/gofont/gobold"
+	"golang.org/x/image/font"
+	"golang.org/x/image/font/opentype"
 )
+
+//go:embed embed/NotoSansJP-Bold.otf
+var NotoSansJP []byte
 
 type point struct {
 	x float64
 	y float64
 }
 type TextDrawer struct {
-	font      string
 	mainText  string
 	subText   string
 	textColor string
@@ -64,7 +67,7 @@ func (t *TextDrawer) newFilename(path, ext string) string {
 
 func (t *TextDrawer) fontSizeMain(img image.Image, text string) float64 {
 	imageWidth := img.Bounds().Dx()
-	return float64(imageWidth*7) / (5.5 * float64(len(text)))
+	return float64(imageWidth*7) / (6 * float64(len(text)))
 }
 
 func (t *TextDrawer) pointMain(img image.Image) point {
@@ -73,7 +76,7 @@ func (t *TextDrawer) pointMain(img image.Image) point {
 
 	return point{
 		x: float64(imgWidth) / 2,
-		y: float64(imgHeight)/2 - float64(imgHeight)/20,
+		y: float64(imgHeight)/2 - float64(imgHeight)/10,
 	}
 }
 
@@ -88,7 +91,7 @@ func (t *TextDrawer) pointSub(img image.Image) point {
 
 	return point{
 		x: float64(imgWidth) / 2,
-		y: float64(imgHeight) - (float64(imgHeight) / 3.5),
+		y: float64(imgHeight) - (float64(imgHeight) / 4),
 	}
 }
 
@@ -164,27 +167,29 @@ func (t *TextDrawer) drawOnImage(path, ext string) error {
 	return nil
 }
 
+func (t *TextDrawer) getFontFace(size float64) (font.Face, error) {
+	opts := &opentype.FaceOptions{
+		Size:    size,
+		DPI:     72,
+		Hinting: font.HintingNone,
+	}
+	otf, err := opentype.Parse(NotoSansJP)
+	if err != nil {
+		return nil, err
+	}
+	return opentype.NewFace(otf, opts)
+}
+
 func (t *TextDrawer) drawText(img image.Image, text string, fontSize float64, p point) (image.Image, error) {
 	imgWidth := img.Bounds().Dx()
 	imgHeight := img.Bounds().Dy()
 	dc := gg.NewContext(imgWidth, imgHeight)
 	dc.DrawImage(img, 0, 0)
 
-	ft, err := func() (*truetype.Font, error) {
-		if t.font == "" {
-			return truetype.Parse(gobold.TTF)
-		}
-		ttf, err := os.ReadFile(t.font)
-		if err != nil {
-			return nil, err
-		}
-		return truetype.Parse(ttf)
-	}()
+	face, err := t.getFontFace(fontSize)
 	if err != nil {
 		return nil, errors.Wrapf(err, "failed to parse font %s", err.Error())
 	}
-
-	face := truetype.NewFace(ft, &truetype.Options{Size: fontSize})
 	dc.SetFontFace(face)
 
 	c := func() color.Gray16 {
@@ -208,7 +213,6 @@ func (t *TextDrawer) drawText(img image.Image, text string, fontSize float64, p 
 }
 
 func main() {
-	font := flag.String("fp", "", "font path")
 	mainText := flag.String("main", "L G T M", "main text")
 	subText := flag.String("sub", "L o o k s   G o o d   T o   M e", "sub text")
 	path := flag.String("i", "", "image path")
@@ -226,7 +230,6 @@ func main() {
 	}
 
 	d := &TextDrawer{
-		font:      *font,
 		mainText:  *mainText,
 		subText:   *subText,
 		textColor: *textColor,
