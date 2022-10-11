@@ -24,6 +24,7 @@ type point struct {
 	y float64
 }
 type TextDrawer struct {
+	font      string
 	mainText  string
 	subText   string
 	textColor string
@@ -169,7 +170,16 @@ func (t *TextDrawer) drawText(img image.Image, text string, fontSize float64, p 
 	dc := gg.NewContext(imgWidth, imgHeight)
 	dc.DrawImage(img, 0, 0)
 
-	ft, err := truetype.Parse(gobold.TTF)
+	ft, err := func() (*truetype.Font, error) {
+		if t.font == "" {
+			return truetype.Parse(gobold.TTF)
+		}
+		ttf, err := os.ReadFile(t.font)
+		if err != nil {
+			return nil, err
+		}
+		return truetype.Parse(ttf)
+	}()
 	if err != nil {
 		return nil, errors.Wrapf(err, "failed to parse font %s", err.Error())
 	}
@@ -198,6 +208,7 @@ func (t *TextDrawer) drawText(img image.Image, text string, fontSize float64, p 
 }
 
 func main() {
+	font := flag.String("fp", "", "font path")
 	mainText := flag.String("main", "L G T M", "main text")
 	subText := flag.String("sub", "L o o k s   G o o d   T o   M e", "sub text")
 	path := flag.String("i", "", "image path")
@@ -215,6 +226,7 @@ func main() {
 	}
 
 	d := &TextDrawer{
+		font:      *font,
 		mainText:  *mainText,
 		subText:   *subText,
 		textColor: *textColor,
