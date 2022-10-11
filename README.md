@@ -16,9 +16,12 @@ Enable to specify image path and color which is `white` or `black`.
 
 ```sh
 lgotm -h
+
 Usage of lgotm:
   -c string
         color 'white' or 'black' (default "white")
+  -fp string
+        font path
   -i string
         image path
   -main string
@@ -32,5 +35,5 @@ Usage of lgotm:
 Output `image-lgtm.jpeg` when run below command.
 
 ```sh
-lgotm -i image.jpeg -c white
+lgotm -i image.jpeg -c white -fp ~/font/Cica-Bold.ttf
 ```
