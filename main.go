@@ -12,6 +12,7 @@ import (
 	"os"
 	"path/filepath"
 	"strings"
+	"unicode"
 
 	"github.com/disintegration/imaging"
 	"github.com/fogleman/gg"
@@ -65,8 +66,17 @@ func (t *TextDrawer) newFilename(path, ext string) string {
 	return fmt.Sprintf("%s-lgtm.%s", name, ext)
 }
 
+func (t *TextDrawer) hasJP(text string) bool {
+	for _, v := range text {
+		return unicode.In(v, unicode.Hiragana, unicode.Katakana, unicode.Han)
+	}
+	return false
+}
 func (t *TextDrawer) fontSizeMain(img image.Image, text string) float64 {
 	imageWidth := img.Bounds().Dx()
+	if t.hasJP(text) {
+		return float64(imageWidth*7) / (6 * float64(len(text)) / 1.8)
+	}
 	return float64(imageWidth*7) / (6 * float64(len(text)))
 }
 
@@ -82,7 +92,10 @@ func (t *TextDrawer) pointMain(img image.Image) point {
 
 func (t *TextDrawer) fontSizeSub(img image.Image, text string) float64 {
 	imageWidth := img.Bounds().Dx()
-	return float64(imageWidth*32) / float64(22*len(text))
+	if t.hasJP(text) {
+		return float64(imageWidth*32) / (22 * float64(len(text)) / 1.3)
+	}
+	return float64(imageWidth*32) / (22 * float64(len(text)))
 }
 
 func (t *TextDrawer) pointSub(img image.Image) point {
