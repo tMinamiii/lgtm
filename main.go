@@ -5,7 +5,6 @@ import (
 	"fmt"
 	"image"
 	"image/color"
-	"image/color/palette"
 	"image/draw"
 	"image/gif"
 	"log"
@@ -97,34 +96,42 @@ func (t *TextDrawer) drawOnGIF(path string) error {
 	if err != nil {
 		return err
 	}
+	defer file.Close()
 
 	orgGif, err := gif.DecodeAll(file)
 	if err != nil {
 		return err
 	}
 
-	newPaletted := make([]*image.Paletted, 0, len(orgGif.Image))
+	newImage := make([]*image.Paletted, 0, len(orgGif.Image))
 	for _, v := range orgGif.Image {
+		v := v
 		img, err := t.drawText(v, t.mainText, t.fontSizeMain(v, t.mainText), t.pointMain(v))
 		if err != nil {
 			return err
 		}
 
-		img, err = t.drawText(img, t.subText, t.fontSizeSub(v, t.subText), t.pointSub(v))
+		img, err = t.drawText(img, t.subText, t.fontSizeSub(img, t.subText), t.pointSub(img))
 		if err != nil {
 			return err
 		}
 
-		palettedImage := image.NewPaletted(img.Bounds(), palette.Plan9)
+		palettedImage := &image.Paletted{
+			Pix:     v.Pix,
+			Stride:  v.Stride,
+			Rect:    v.Bounds(),
+			Palette: v.Palette,
+		}
 		draw.Draw(palettedImage, palettedImage.Rect, img, img.Bounds().Min, draw.Over)
-		newPaletted = append(newPaletted, palettedImage)
+		newImage = append(newImage, palettedImage)
 	}
-	orgGif.Image = newPaletted
+	orgGif.Image = newImage
 
 	out, err := os.Create(t.newFilename(path, "gif"))
 	if err != nil {
 		return err
 	}
+	defer out.Close()
 
 	if err := gif.EncodeAll(out, orgGif); err != nil {
 		return err
