@@ -18,10 +18,12 @@ import (
 )
 
 func fontSizeMain(imageWidth int, text string) float64 {
+	// main message font size is optimized by "L G T M" (length = 7)
 	return float64(imageWidth*7) / float64(6*len(text))
 }
 
 func fontSizeSub(imageWidth int, text string) float64 {
+	// sub message font size is optimized by "L o o k s   G o o d   T o   M e" (length = 32)
 	return float64(imageWidth*32) / float64(22*len(text))
 }
 
