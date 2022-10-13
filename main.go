@@ -24,6 +24,9 @@ import (
 //go:embed embed/NotoSansJP-Bold.otf
 var NotoSansJP []byte
 
+//go:embed embed/NotoSerifJP-Bold.otf
+var NotoSerifJP []byte
+
 type point struct {
 	x float64
 	y float64
@@ -32,6 +35,7 @@ type TextDrawer struct {
 	mainText  string
 	subText   string
 	textColor string
+	isSerif   bool
 }
 
 func (t *TextDrawer) Draw(path string) error {
@@ -72,6 +76,7 @@ func (t *TextDrawer) hasJP(text string) bool {
 	}
 	return false
 }
+
 func (t *TextDrawer) fontSizeMain(img image.Image, text string) float64 {
 	imageWidth := img.Bounds().Dx()
 	if t.hasJP(text) {
@@ -186,6 +191,15 @@ func (t *TextDrawer) getFontFace(size float64) (font.Face, error) {
 		DPI:     72,
 		Hinting: font.HintingNone,
 	}
+
+	if t.isSerif {
+		otf, err := opentype.Parse(NotoSerifJP)
+		if err != nil {
+			return nil, err
+		}
+		return opentype.NewFace(otf, opts)
+	}
+
 	otf, err := opentype.Parse(NotoSansJP)
 	if err != nil {
 		return nil, err
@@ -230,6 +244,7 @@ func main() {
 	subText := flag.String("sub", "L o o k s   G o o d   T o   M e", "sub text")
 	path := flag.String("i", "", "image path")
 	textColor := flag.String("c", "white", "color 'white' or 'black'")
+	serif := flag.Bool("serif", false, "serif font")
 	flag.Parse()
 
 	if *path == "" {
@@ -246,6 +261,7 @@ func main() {
 		mainText:  *mainText,
 		subText:   *subText,
 		textColor: *textColor,
+		isSerif:   *serif,
 	}
 
 	if err := d.Draw(*path); err != nil {
