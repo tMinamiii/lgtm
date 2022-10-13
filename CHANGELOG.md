@@ -1,5 +1,7 @@
 # Changelog
 
+## [v0.1.18](https://github.com/tMinamiii/lgotm/compare/v0.1.17...v0.1.18) - 2022-10-13
+
 ## [v0.1.16](https://github.com/tMinamiii/lgotm/compare/v0.1.15...v0.1.16) - 2022-10-13
 
 ## [v0.1.15](https://github.com/tMinamiii/lgotm/compare/v0.1.14...v0.1.15) - 2022-10-13
