@@ -123,7 +123,7 @@ func (t *TextDrawer) pointSub(img image.Image) point {
 	}
 }
 
-func (t *TextDrawer) drawGopher(src image.Image) (image.Image, error) {
+func (t *TextDrawer) drawGopher(src image.Image, shake bool) (image.Image, error) {
 	buf := bytes.NewBuffer(GopherPng)
 	gopher, err := png.Decode(buf)
 	if err != nil {
@@ -135,7 +135,13 @@ func (t *TextDrawer) drawGopher(src image.Image) (image.Image, error) {
 		gopher = imaging.Resize(gopher, gopher.Bounds().Dx()/2, gopher.Bounds().Dy()/2, imaging.NearestNeighbor)
 	}
 
-	center := image.Point{-(src.Bounds().Dx() - gopher.Bounds().Dx()) / 2, -(src.Bounds().Dy() - gopher.Bounds().Dy()) / 2}
+	x := -((src.Bounds().Dx() - gopher.Bounds().Dx()) / 2)
+	y := -(src.Bounds().Dy() - gopher.Bounds().Dy()) / 2
+	if shake {
+		x -= 3
+	}
+
+	center := image.Point{x, y}
 	newImg := image.NewRGBA(src.Bounds())
 	draw.Draw(newImg, newImg.Bounds(), src, image.Point{0, 0}, draw.Src)
 	draw.Draw(newImg, newImg.Bounds(), gopher, center, draw.Over)
@@ -202,11 +208,11 @@ func (t *TextDrawer) drawOnGIF(path string) error {
 	}
 
 	newImage := make([]*image.Paletted, 0, len(orgGif.Image))
-	for _, v := range orgGif.Image {
+	for i, v := range orgGif.Image {
 		v := v
 		var img image.Image
 		if t.isGopher {
-			img, err = t.drawGopher(v)
+			img, err = t.drawGopher(v, i%2 == 0)
 			if err != nil {
 				return err
 			}
@@ -248,7 +254,7 @@ func (t *TextDrawer) drawOnImage(path, ext string) error {
 	}
 
 	if t.isGopher {
-		img, err = t.drawGopher(img)
+		img, err = t.drawGopher(img, false)
 		if err != nil {
 			return err
 		}

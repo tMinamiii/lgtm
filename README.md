@@ -20,10 +20,14 @@ lgotm -h
 Usage of lgotm:
   -c string
         color 'white' or 'black' (default "white")
+  -gopher
+        embed gopher
   -i string
         image path
   -main string
         main text (default "L G T M")
+  -serif
+        serif font
   -sub string
         sub text (default "L o o k s   G o o d   T o   M e")
 ```
