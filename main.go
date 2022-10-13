@@ -73,7 +73,11 @@ func (t *TextDrawer) extension(path string) (string, error) {
 func (t *TextDrawer) newFilename(path, ext string) string {
 	filename := filepath.Base(path)
 	name := strings.Split(filename, ".")[0]
-	return fmt.Sprintf("%s-lgtm.%s", name, ext)
+	suffix := "lgtm"
+	if t.isGopher {
+		suffix = "gopher"
+	}
+	return fmt.Sprintf("%s-%s.%s", name, suffix, ext)
 }
 
 func (t *TextDrawer) hasJP(text string) bool {
