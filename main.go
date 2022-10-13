@@ -1,6 +1,7 @@
 package main
 
 import (
+	"bytes"
 	_ "embed"
 	"flag"
 	"fmt"
@@ -8,6 +9,7 @@ import (
 	"image/color"
 	"image/draw"
 	"image/gif"
+	"image/png"
 	"log"
 	"os"
 	"path/filepath"
@@ -27,6 +29,9 @@ var NotoSansJP []byte
 //go:embed embed/NotoSerifJP-Bold.otf
 var NotoSerifJP []byte
 
+//go:embed embed/gopher.png
+var GopherPng []byte
+
 type point struct {
 	x float64
 	y float64
@@ -36,6 +41,7 @@ type TextDrawer struct {
 	subText   string
 	textColor string
 	isSerif   bool
+	isGopher  bool
 }
 
 func (t *TextDrawer) Draw(path string) error {
@@ -113,6 +119,72 @@ func (t *TextDrawer) pointSub(img image.Image) point {
 	}
 }
 
+func (t *TextDrawer) drawGopher(src image.Image) (image.Image, error) {
+	buf := bytes.NewBuffer(GopherPng)
+	gopher, err := png.Decode(buf)
+	if err != nil {
+		return nil, err
+	}
+
+	// if gopher image is larger than src image, resize gopher image to half size.
+	if src.Bounds().Dx() <= gopher.Bounds().Dx() || src.Bounds().Dx() <= gopher.Bounds().Dy() {
+		gopher = imaging.Resize(gopher, gopher.Bounds().Dx()/2, gopher.Bounds().Dy()/2, imaging.NearestNeighbor)
+	}
+
+	center := image.Point{-(src.Bounds().Dx() - gopher.Bounds().Dx()) / 2, -(src.Bounds().Dy() - gopher.Bounds().Dy()) / 2}
+	newImg := image.NewRGBA(src.Bounds())
+	draw.Draw(newImg, newImg.Bounds(), src, image.Point{0, 0}, draw.Src)
+	draw.Draw(newImg, newImg.Bounds(), gopher, center, draw.Over)
+
+	return newImg, nil
+}
+
+func (t *TextDrawer) drawString(img image.Image, text string, fontSize float64, p point) (image.Image, error) {
+	imgWidth := img.Bounds().Dx()
+	imgHeight := img.Bounds().Dy()
+	dc := gg.NewContext(imgWidth, imgHeight)
+	dc.DrawImage(img, 0, 0)
+
+	face, err := t.getFontFace(fontSize)
+	if err != nil {
+		return nil, errors.Wrapf(err, "failed to parse font %s", err.Error())
+	}
+	dc.SetFontFace(face)
+
+	c := func() color.Gray16 {
+		if t.textColor == "white" {
+			return color.White
+		}
+		return color.Black
+	}()
+	dc.SetColor(c)
+
+	maxWidth := func() float64 {
+		if imgWidth > 640 {
+			return float64(imgWidth) - 60.0
+		}
+		return float64(imgWidth)
+	}()
+
+	dc.DrawStringWrapped(text, p.x, p.y, 0.5, 0.5, maxWidth, 1.5, gg.AlignCenter)
+
+	return dc.Image(), nil
+}
+
+func (t *TextDrawer) drawMessageText(i image.Image) (image.Image, error) {
+	img, err := t.drawString(i, t.mainText, t.fontSizeMain(i, t.mainText), t.pointMain(i))
+	if err != nil {
+		return nil, err
+	}
+
+	img, err = t.drawString(img, t.subText, t.fontSizeSub(img, t.subText), t.pointSub(img))
+	if err != nil {
+		return nil, err
+	}
+
+	return img, nil
+}
+
 func (t *TextDrawer) drawOnGIF(path string) error {
 	file, err := os.Open(path)
 	if err != nil {
@@ -128,14 +200,17 @@ func (t *TextDrawer) drawOnGIF(path string) error {
 	newImage := make([]*image.Paletted, 0, len(orgGif.Image))
 	for _, v := range orgGif.Image {
 		v := v
-		img, err := t.drawText(v, t.mainText, t.fontSizeMain(v, t.mainText), t.pointMain(v))
-		if err != nil {
-			return err
-		}
-
-		img, err = t.drawText(img, t.subText, t.fontSizeSub(img, t.subText), t.pointSub(img))
-		if err != nil {
-			return err
+		var img image.Image
+		if t.isGopher {
+			img, err = t.drawGopher(v)
+			if err != nil {
+				return err
+			}
+		} else {
+			img, err = t.drawMessageText(v)
+			if err != nil {
+				return err
+			}
 		}
 
 		palettedImage := &image.Paletted{
@@ -168,14 +243,16 @@ func (t *TextDrawer) drawOnImage(path, ext string) error {
 		return err
 	}
 
-	img, err = t.drawText(img, t.mainText, t.fontSizeMain(img, t.mainText), t.pointMain(img))
-	if err != nil {
-		return err
-	}
-
-	img, err = t.drawText(img, t.subText, t.fontSizeSub(img, t.subText), t.pointSub(img))
-	if err != nil {
-		return err
+	if t.isGopher {
+		img, err = t.drawGopher(img)
+		if err != nil {
+			return err
+		}
+	} else {
+		img, err = t.drawMessageText(img)
+		if err != nil {
+			return err
+		}
 	}
 
 	if err := imaging.Save(img, t.newFilename(path, ext)); err != nil {
@@ -207,44 +284,13 @@ func (t *TextDrawer) getFontFace(size float64) (font.Face, error) {
 	return opentype.NewFace(otf, opts)
 }
 
-func (t *TextDrawer) drawText(img image.Image, text string, fontSize float64, p point) (image.Image, error) {
-	imgWidth := img.Bounds().Dx()
-	imgHeight := img.Bounds().Dy()
-	dc := gg.NewContext(imgWidth, imgHeight)
-	dc.DrawImage(img, 0, 0)
-
-	face, err := t.getFontFace(fontSize)
-	if err != nil {
-		return nil, errors.Wrapf(err, "failed to parse font %s", err.Error())
-	}
-	dc.SetFontFace(face)
-
-	c := func() color.Gray16 {
-		if t.textColor == "white" {
-			return color.White
-		}
-		return color.Black
-	}()
-	dc.SetColor(c)
-
-	maxWidth := func() float64 {
-		if imgWidth > 640 {
-			return float64(imgWidth) - 60.0
-		}
-		return float64(imgWidth)
-	}()
-
-	dc.DrawStringWrapped(text, p.x, p.y, 0.5, 0.5, maxWidth, 1.5, gg.AlignCenter)
-
-	return dc.Image(), nil
-}
-
 func main() {
 	mainText := flag.String("main", "L G T M", "main text")
 	subText := flag.String("sub", "L o o k s   G o o d   T o   M e", "sub text")
 	path := flag.String("i", "", "image path")
 	textColor := flag.String("c", "white", "color 'white' or 'black'")
 	serif := flag.Bool("serif", false, "serif font")
+	gopher := flag.Bool("gopher", false, "embed gopher")
 	flag.Parse()
 
 	if *path == "" {
@@ -262,6 +308,7 @@ func main() {
 		subText:   *subText,
 		textColor: *textColor,
 		isSerif:   *serif,
+		isGopher:  *gopher,
 	}
 
 	if err := d.Draw(*path); err != nil {
