@@ -131,7 +131,7 @@ func (t *TextDrawer) drawGopher(src image.Image) (image.Image, error) {
 	}
 
 	// if gopher image is larger than src image, resize gopher image to half size.
-	if src.Bounds().Dx() <= gopher.Bounds().Dx() || src.Bounds().Dx() <= gopher.Bounds().Dy() {
+	if src.Bounds().Dx() <= gopher.Bounds().Dx() || src.Bounds().Dy() <= gopher.Bounds().Dy() {
 		gopher = imaging.Resize(gopher, gopher.Bounds().Dx()/2, gopher.Bounds().Dy()/2, imaging.NearestNeighbor)
 	}
 
