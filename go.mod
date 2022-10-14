@@ -1,4 +1,4 @@
-module github.com/tMinamiii/lgotm
+module github.com/tMinamiii/lgtm
 
 go 1.19
 
