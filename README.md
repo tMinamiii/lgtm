@@ -24,6 +24,8 @@ Usage of lgtm:
         embed gopher
   -i string
         image path
+  -line
+        LINE seed font
   -main string
         main text (default "L G T M")
   -serif
@@ -42,7 +44,7 @@ lgtm -i image.jpeg -c white
 
 ## License
 
-### About lgtm
+### About lgtm cli
 
 The MIT License (MIT)
 
@@ -71,3 +73,12 @@ SOFTWARE.
 The Go gopher was designed by Renee French. (http://reneefrench.blogspot.com/)
 The design is licensed under the Creative Commons 3.0 Attributions license.
 Read this article for more details: https://blog.golang.org/gopher
+
+
+### About LINE Seed Licensing
+
+All content of LINE Seed is copyrighted material owned by LINE Corp.
+All typefaces are released under free, open source license.
+You can use them for any personal or commercial purpose.
+However, the software font files themselves cannot be sold by the other parties other than LINE Corp.
+For commercial use, we highly recommend to include attribution in product or service.

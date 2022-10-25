@@ -26,23 +26,34 @@ var NotoSansJP []byte
 //go:embed embed/NotoSerifJP-Bold.otf
 var NotoSerifJP []byte
 
+//go:embed embed/LINESeedJP_OTF_Bd.otf
+var LINESeedJP []byte
+
 //go:embed embed/gopher.png
 var GopherPng []byte
+
+type Font string
+
+const (
+	NotSans  Font = "NotoSans"
+	NotSerif Font = "NotoSerif"
+	LINESeed Font = "LINESeed"
+)
 
 type TextDrawer struct {
 	MainText  *Text
 	SubText   *Text
 	TextColor string
-	IsSerif   bool
+	Font      Font
 	IsGopher  bool
 }
 
-func NewTextDrawer(main, sub *Text, color string, isSerif, isGopher bool) *TextDrawer {
+func NewTextDrawer(main, sub *Text, color string, font Font, isGopher bool) *TextDrawer {
 	return &TextDrawer{
 		MainText:  main,
 		SubText:   sub,
 		TextColor: color,
-		IsSerif:   isSerif,
+		Font:      font,
 		IsGopher:  isGopher,
 	}
 }
@@ -187,12 +198,12 @@ func (t *TextDrawer) embedGopher(src image.Image, shake bool) (image.Image, erro
 }
 
 func (t *TextDrawer) drawMessageText(i image.Image) (image.Image, error) {
-	img, err := t.drawString(i, t.MainText)
+	img, err := t.embedString(i, t.MainText)
 	if err != nil {
 		return nil, err
 	}
 
-	img, err = t.drawString(img, t.SubText)
+	img, err = t.embedString(img, t.SubText)
 	if err != nil {
 		return nil, err
 	}
@@ -200,7 +211,7 @@ func (t *TextDrawer) drawMessageText(i image.Image) (image.Image, error) {
 	return img, nil
 }
 
-func (t *TextDrawer) drawString(img image.Image, text *Text) (image.Image, error) {
+func (t *TextDrawer) embedString(img image.Image, text *Text) (image.Image, error) {
 	imgWidth := img.Bounds().Dx()
 	imgHeight := img.Bounds().Dy()
 	dc := gg.NewContext(imgWidth, imgHeight)
@@ -240,17 +251,24 @@ func (t *TextDrawer) getFontFace(size float64) (font.Face, error) {
 		Hinting: font.HintingNone,
 	}
 
-	if t.IsSerif {
+	switch t.Font {
+	case NotSerif:
 		otf, err := opentype.Parse(NotoSerifJP)
 		if err != nil {
 			return nil, err
 		}
 		return opentype.NewFace(otf, opts)
+	case LINESeed:
+		otf, err := opentype.Parse(LINESeedJP)
+		if err != nil {
+			return nil, err
+		}
+		return opentype.NewFace(otf, opts)
+	default:
+		otf, err := opentype.Parse(NotoSansJP)
+		if err != nil {
+			return nil, err
+		}
+		return opentype.NewFace(otf, opts)
 	}
-
-	otf, err := opentype.Parse(NotoSansJP)
-	if err != nil {
-		return nil, err
-	}
-	return opentype.NewFace(otf, opts)
 }
