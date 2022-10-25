@@ -12,8 +12,6 @@ go install github.com/tMinamiii/lgtm@latest
 
 ## Usage
 
-Enable to specify image path and color which is `white` or `black`.
-
 ```sh
 lgtm -h
 
@@ -82,3 +80,9 @@ All typefaces are released under free, open source license.
 You can use them for any personal or commercial purpose.
 However, the software font files themselves cannot be sold by the other parties other than LINE Corp.
 For commercial use, we highly recommend to include attribution in product or service.
+
+### About Noto font
+
+Usage and redistribution conditions are specified in the license. The most common license is the SIL Open Font License. Some fonts are under the Apache license or Ubuntu Font License. You can redistribute open source fonts according to those conditions.
+
+https://developers.google.com/fonts/faq
