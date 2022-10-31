@@ -16,20 +16,16 @@ import (
 )
 
 type TextDrawer struct {
-	MainText  *Text
-	SubText   *Text
-	TextColor TextColor
-	Font      Font
-	IsGopher  bool
+	MainText *Text
+	SubText  *Text
+	IsGopher bool
 }
 
-func NewTextDrawer(main, sub *Text, color TextColor, font Font, isGopher bool) *TextDrawer {
+func NewTextDrawer(main, sub *Text, isGopher bool) *TextDrawer {
 	return &TextDrawer{
-		MainText:  main,
-		SubText:   sub,
-		TextColor: color,
-		Font:      font,
-		IsGopher:  isGopher,
+		MainText: main,
+		SubText:  sub,
+		IsGopher: isGopher,
 	}
 }
 
@@ -192,13 +188,13 @@ func (t *TextDrawer) embedString(img image.Image, text *Text) (image.Image, erro
 	dc.DrawImage(img, 0, 0)
 
 	fontSize := text.FontSize(img, text.Text)
-	face, err := t.Font.FontFace(fontSize)
+	face, err := text.Font.FontFace(fontSize)
 	if err != nil {
 		return nil, errors.Wrapf(err, "failed to parse font %s", err.Error())
 	}
 	dc.SetFontFace(face)
 
-	dc.SetColor(t.TextColor.Gray16())
+	dc.SetColor(text.TextColor.Gray16())
 
 	maxWidth := func() float64 {
 		if imgWidth > 640 {

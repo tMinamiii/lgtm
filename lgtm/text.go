@@ -36,13 +36,17 @@ const (
 
 type Text struct {
 	Text        string
+	Font        Font
 	MessageType MessageType
+	TextColor   TextColor
 }
 
-func NewText(text string, messageType MessageType) *Text {
+func NewText(text string, font Font, messageType MessageType, textColor TextColor) *Text {
 	return &Text{
 		Text:        text,
+		Font:        font,
 		MessageType: messageType,
+		TextColor:   textColor,
 	}
 }
 

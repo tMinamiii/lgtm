@@ -28,10 +28,10 @@ func main() {
 		textColor = lgtm.TextColorBlack
 	}
 
-	main := lgtm.NewText(*mainText, lgtm.MessageTypeMain)
-	sub := lgtm.NewText(*subText, lgtm.MessageTypeSub)
 	font := getFont(*serif, *line)
-	d := lgtm.NewTextDrawer(main, sub, textColor, font, *gopher)
+	main := lgtm.NewText(*mainText, font, lgtm.MessageTypeMain, textColor)
+	sub := lgtm.NewText(*subText, font, lgtm.MessageTypeSub, textColor)
+	d := lgtm.NewTextDrawer(main, sub, *gopher)
 
 	if err := d.Draw(*path); err != nil {
 		log.Fatal(err)
