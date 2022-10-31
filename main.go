@@ -5,7 +5,7 @@ import (
 	"log"
 	"os"
 
-	drawer "github.com/tMinamiii/lgtm/lgtm"
+	"github.com/tMinamiii/lgtm/drawer"
 	"github.com/tMinamiii/lgtm/object"
 )
 
