@@ -21,13 +21,13 @@ Usage of lgtm:
   -gopher
         embed gopher
   -i string
-        image path
+        image file path
   -line
         LINE seed font
   -main string
         main text (default "L G T M")
   -serif
-        serif font
+        Noto serif font
   -sub string
         sub text (default "L o o k s   G o o d   T o   M e")
 ```
