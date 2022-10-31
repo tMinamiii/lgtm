@@ -2,6 +2,7 @@ package lgtm
 
 import (
 	"image"
+	"image/color"
 	"unicode"
 )
 
@@ -9,6 +10,17 @@ const (
 	DefaultMainText = "L G T M"
 	DefaultSubText  = "L o o k s   G o o d   T o   M e"
 )
+
+type TextColor color.Gray16
+
+var (
+	TextColorWhite = TextColor(color.White)
+	TextColorBlack = TextColor(color.Black)
+)
+
+func (t TextColor) Gray16() color.Gray16 {
+	return color.Gray16(t)
+}
 
 type Point struct {
 	X float64

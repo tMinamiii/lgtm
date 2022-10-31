@@ -4,7 +4,6 @@ import (
 	_ "embed"
 	"fmt"
 	"image"
-	"image/color"
 	"image/draw"
 	"image/gif"
 	"os"
@@ -19,12 +18,12 @@ import (
 type TextDrawer struct {
 	MainText  *Text
 	SubText   *Text
-	TextColor string
+	TextColor TextColor
 	Font      Font
 	IsGopher  bool
 }
 
-func NewTextDrawer(main, sub *Text, color string, font Font, isGopher bool) *TextDrawer {
+func NewTextDrawer(main, sub *Text, color TextColor, font Font, isGopher bool) *TextDrawer {
 	return &TextDrawer{
 		MainText:  main,
 		SubText:   sub,
@@ -199,13 +198,7 @@ func (t *TextDrawer) embedString(img image.Image, text *Text) (image.Image, erro
 	}
 	dc.SetFontFace(face)
 
-	c := func() color.Gray16 {
-		if t.TextColor == "white" {
-			return color.White
-		}
-		return color.Black
-	}()
-	dc.SetColor(c)
+	dc.SetColor(t.TextColor.Gray16())
 
 	maxWidth := func() float64 {
 		if imgWidth > 640 {
