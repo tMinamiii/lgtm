@@ -28,8 +28,8 @@ func main() {
 		textColor = &w
 	}
 
-	main := lgtm.NewText(*mainText, lgtm.FontSizeMain, lgtm.PointMain)
-	sub := lgtm.NewText(*subText, lgtm.FontSizeSub, lgtm.PointSub)
+	main := lgtm.NewText(*mainText, lgtm.MessageTypeMain)
+	sub := lgtm.NewText(*subText, lgtm.MessageTypeSub)
 	font := getFont(*serif, *line)
 	d := lgtm.NewTextDrawer(main, sub, *textColor, font, *gopher)
 
@@ -42,10 +42,10 @@ func main() {
 func getFont(isSerif, isLine bool) lgtm.Font {
 	switch {
 	case isSerif:
-		return lgtm.NotSerif
+		return lgtm.NotoSerifJP
 	case isLine:
-		return lgtm.LINESeed
+		return lgtm.LINESeedJP
 	default:
-		return lgtm.NotSans
+		return lgtm.NotoSansJP
 	}
 }

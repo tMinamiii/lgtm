@@ -20,25 +20,42 @@ import (
 	"golang.org/x/image/font/opentype"
 )
 
-//go:embed embed/NotoSansJP-Bold.otf
-var NotoSansJP []byte
+type Font []byte
 
-//go:embed embed/NotoSerifJP-Bold.otf
-var NotoSerifJP []byte
+var (
+	//go:embed embed/NotoSansJP-Bold.otf
+	NotoSansJP Font
 
-//go:embed embed/LINESeedJP_OTF_Bd.otf
-var LINESeedJP []byte
+	//go:embed embed/NotoSerifJP-Bold.otf
+	NotoSerifJP Font
+
+	//go:embed embed/LINESeedJP_OTF_Bd.otf
+	LINESeedJP Font
+)
+
+func (f Font) FontFace(size float64) (font.Face, error) {
+	opts := &opentype.FaceOptions{
+		Size:    size,
+		DPI:     72,
+		Hinting: font.HintingNone,
+	}
+
+	otf, err := opentype.Parse(f)
+	if err != nil {
+		return nil, err
+	}
+	return opentype.NewFace(otf, opts)
+}
+
+type EmbedImage []byte
 
 //go:embed embed/gopher.png
-var GopherPng []byte
+var GopherPng EmbedImage
 
-type Font string
-
-const (
-	NotSans  Font = "NotoSans"
-	NotSerif Font = "NotoSerif"
-	LINESeed Font = "LINESeed"
-)
+func (e EmbedImage) Image() (image.Image, error) {
+	buf := bytes.NewBuffer(GopherPng)
+	return png.Decode(buf)
+}
 
 type TextDrawer struct {
 	MainText  *Text
@@ -116,7 +133,7 @@ func (t *TextDrawer) drawOnGIF(path string) error {
 				return err
 			}
 		} else {
-			img, err = t.drawMessageText(v)
+			img, err = t.embedTexts(v)
 			if err != nil {
 				return err
 			}
@@ -158,7 +175,7 @@ func (t *TextDrawer) drawOnImage(path, ext string) error {
 			return err
 		}
 	} else {
-		img, err = t.drawMessageText(img)
+		img, err = t.embedTexts(img)
 		if err != nil {
 			return err
 		}
@@ -172,8 +189,7 @@ func (t *TextDrawer) drawOnImage(path, ext string) error {
 }
 
 func (t *TextDrawer) embedGopher(src image.Image, shake bool) (image.Image, error) {
-	buf := bytes.NewBuffer(GopherPng)
-	gopher, err := png.Decode(buf)
+	gopher, err := GopherPng.Image()
 	if err != nil {
 		return nil, err
 	}
@@ -197,7 +213,7 @@ func (t *TextDrawer) embedGopher(src image.Image, shake bool) (image.Image, erro
 	return newImg, nil
 }
 
-func (t *TextDrawer) drawMessageText(i image.Image) (image.Image, error) {
+func (t *TextDrawer) embedTexts(i image.Image) (image.Image, error) {
 	img, err := t.embedString(i, t.MainText)
 	if err != nil {
 		return nil, err
@@ -217,7 +233,8 @@ func (t *TextDrawer) embedString(img image.Image, text *Text) (image.Image, erro
 	dc := gg.NewContext(imgWidth, imgHeight)
 	dc.DrawImage(img, 0, 0)
 
-	face, err := t.getFontFace(text.FontSize(img, text.Text))
+	fontSize := text.FontSize(img, text.Text)
+	face, err := t.Font.FontFace(fontSize)
 	if err != nil {
 		return nil, errors.Wrapf(err, "failed to parse font %s", err.Error())
 	}
@@ -242,33 +259,4 @@ func (t *TextDrawer) embedString(img image.Image, text *Text) (image.Image, erro
 	dc.DrawStringWrapped(text.Text, pt.X, pt.Y, 0.5, 0.5, maxWidth, 1.5, gg.AlignCenter)
 
 	return dc.Image(), nil
-}
-
-func (t *TextDrawer) getFontFace(size float64) (font.Face, error) {
-	opts := &opentype.FaceOptions{
-		Size:    size,
-		DPI:     72,
-		Hinting: font.HintingNone,
-	}
-
-	switch t.Font {
-	case NotSerif:
-		otf, err := opentype.Parse(NotoSerifJP)
-		if err != nil {
-			return nil, err
-		}
-		return opentype.NewFace(otf, opts)
-	case LINESeed:
-		otf, err := opentype.Parse(LINESeedJP)
-		if err != nil {
-			return nil, err
-		}
-		return opentype.NewFace(otf, opts)
-	default:
-		otf, err := opentype.Parse(NotoSansJP)
-		if err != nil {
-			return nil, err
-		}
-		return opentype.NewFace(otf, opts)
-	}
 }
