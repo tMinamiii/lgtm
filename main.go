@@ -9,12 +9,12 @@ import (
 )
 
 func main() {
-	mainText := flag.String("main", "L G T M", "main text")
-	subText := flag.String("sub", "L o o k s   G o o d   T o   M e", "sub text")
-	path := flag.String("i", "", "image path")
+	mainText := flag.String("main", lgtm.DefaultMainText, "main text")
+	subText := flag.String("sub", lgtm.DefaultSubText, "sub text")
+	path := flag.String("i", "", "image file path")
 	textColor := flag.String("c", "white", "color 'white' or 'black'")
 	line := flag.Bool("line", false, "LINE seed font")
-	serif := flag.Bool("serif", false, "serif font")
+	serif := flag.Bool("serif", false, "Noto serif font")
 	gopher := flag.Bool("gopher", false, "embed gopher")
 	flag.Parse()
 
