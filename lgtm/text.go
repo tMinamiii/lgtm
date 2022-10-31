@@ -35,7 +35,6 @@ func NewText(text string, messageType MessageType) *Text {
 }
 
 func (t *Text) FontSize(img image.Image, text string) float64 {
-
 	switch t.MessageType {
 	case MessageTypeMain:
 		textLength := len(DefaultMainText)
