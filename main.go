@@ -23,6 +23,15 @@ func main() {
 		os.Exit(1)
 	}
 
+	if *gopher {
+		drawer := lgtm.NewGopherDrawer()
+		if err := drawer.Draw(*path); err != nil {
+			log.Fatal(err)
+			os.Exit(1)
+		}
+		return
+	}
+
 	textColor := lgtm.TextColorWhite
 	if *color == "black" {
 		textColor = lgtm.TextColorBlack
@@ -31,9 +40,9 @@ func main() {
 	font := getFont(*serif, *line)
 	main := lgtm.NewText(*mainText, font, lgtm.MessageTypeMain, textColor)
 	sub := lgtm.NewText(*subText, font, lgtm.MessageTypeSub, textColor)
-	d := lgtm.NewTextDrawer(main, sub, *gopher)
 
-	if err := d.Draw(*path); err != nil {
+	drawer := lgtm.NewTextDrawer(main, sub)
+	if err := drawer.Draw(*path); err != nil {
 		log.Fatal(err)
 		os.Exit(1)
 	}
