@@ -1,4 +1,4 @@
-package lgtm
+package object
 
 import (
 	"bytes"
@@ -9,7 +9,7 @@ import (
 
 type EmbedImage []byte
 
-//go:embed embed/gopher.png
+//go:embed data/gopher.png
 var GopherPng EmbedImage
 
 func (e EmbedImage) Image() (image.Image, error) {

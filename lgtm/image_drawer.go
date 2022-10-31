@@ -1,4 +1,4 @@
-package lgtm
+package drawer
 
 import (
 	_ "embed"
@@ -13,14 +13,15 @@ import (
 	"github.com/disintegration/imaging"
 	"github.com/fogleman/gg"
 	"github.com/pkg/errors"
+	"github.com/tMinamiii/lgtm/object"
 )
 
 type TextDrawer struct {
-	MainText *Text
-	SubText  *Text
+	MainText *object.Text
+	SubText  *object.Text
 }
 
-func NewTextDrawer(main, sub *Text) Drawer {
+func NewTextDrawer(main, sub *object.Text) Drawer {
 	return &TextDrawer{
 		MainText: main,
 		SubText:  sub,
@@ -137,7 +138,7 @@ func (t *TextDrawer) embedTexts(i image.Image) (image.Image, error) {
 	return img, nil
 }
 
-func (t *TextDrawer) embedString(img image.Image, text *Text) (image.Image, error) {
+func (t *TextDrawer) embedString(img image.Image, text *object.Text) (image.Image, error) {
 	imgWidth := img.Bounds().Dx()
 	imgHeight := img.Bounds().Dy()
 	dc := gg.NewContext(imgWidth, imgHeight)

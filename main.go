@@ -5,12 +5,13 @@ import (
 	"log"
 	"os"
 
-	"github.com/tMinamiii/lgtm/lgtm"
+	drawer "github.com/tMinamiii/lgtm/lgtm"
+	"github.com/tMinamiii/lgtm/object"
 )
 
 func main() {
-	mainText := flag.String("main", lgtm.DefaultMainText, "main text")
-	subText := flag.String("sub", lgtm.DefaultSubText, "sub text")
+	mainText := flag.String("main", object.DefaultMainText, "main text")
+	subText := flag.String("sub", object.DefaultSubText, "sub text")
 	path := flag.String("i", "", "image file path")
 	color := flag.String("c", "white", "color 'white' or 'black'")
 	line := flag.Bool("line", false, "LINE seed font")
@@ -24,37 +25,37 @@ func main() {
 	}
 
 	if *gopher {
-		drawer := lgtm.NewGopherDrawer()
-		if err := drawer.Draw(*path); err != nil {
+		d := drawer.NewGopherDrawer()
+		if err := d.Draw(*path); err != nil {
 			log.Fatal(err)
 			os.Exit(1)
 		}
 		return
 	}
 
-	textColor := lgtm.TextColorWhite
+	textColor := object.TextColorWhite
 	if *color == "black" {
-		textColor = lgtm.TextColorBlack
+		textColor = object.TextColorBlack
 	}
 
 	font := getFont(*serif, *line)
-	main := lgtm.NewText(*mainText, font, lgtm.MessageTypeMain, textColor)
-	sub := lgtm.NewText(*subText, font, lgtm.MessageTypeSub, textColor)
+	main := object.NewText(*mainText, font, object.MessageTypeMain, textColor)
+	sub := object.NewText(*subText, font, object.MessageTypeSub, textColor)
 
-	drawer := lgtm.NewTextDrawer(main, sub)
-	if err := drawer.Draw(*path); err != nil {
+	d := drawer.NewTextDrawer(main, sub)
+	if err := d.Draw(*path); err != nil {
 		log.Fatal(err)
 		os.Exit(1)
 	}
 }
 
-func getFont(isSerif, isLine bool) lgtm.Font {
+func getFont(isSerif, isLine bool) object.Font {
 	switch {
 	case isSerif:
-		return lgtm.NotoSerifJP
+		return object.NotoSerifJP
 	case isLine:
-		return lgtm.LINESeedJP
+		return object.LINESeedJP
 	default:
-		return lgtm.NotoSansJP
+		return object.NotoSansJP
 	}
 }

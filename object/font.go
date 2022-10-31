@@ -1,4 +1,4 @@
-package lgtm
+package object
 
 import (
 	_ "embed"
@@ -10,13 +10,13 @@ import (
 type Font []byte
 
 var (
-	//go:embed embed/NotoSansJP-Bold.otf
+	//go:embed data/NotoSansJP-Bold.otf
 	NotoSansJP Font
 
-	//go:embed embed/NotoSerifJP-Bold.otf
+	//go:embed data/NotoSerifJP-Bold.otf
 	NotoSerifJP Font
 
-	//go:embed embed/LINESeedJP_OTF_Bd.otf
+	//go:embed data/LINESeedJP_OTF_Bd.otf
 	LINESeedJP Font
 )
 

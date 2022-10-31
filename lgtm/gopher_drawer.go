@@ -1,4 +1,4 @@
-package lgtm
+package drawer
 
 import (
 	"fmt"
@@ -10,6 +10,7 @@ import (
 	"strings"
 
 	"github.com/disintegration/imaging"
+	"github.com/tMinamiii/lgtm/object"
 )
 
 type GopherDrawer struct {
@@ -115,7 +116,7 @@ func (t *GopherDrawer) drawOnImage(path, ext string) error {
 }
 
 func (t *GopherDrawer) embedGopher(src image.Image, shake bool) (image.Image, error) {
-	gopher, err := GopherPng.Image()
+	gopher, err := object.GopherPng.Image()
 	if err != nil {
 		return nil, err
 	}
