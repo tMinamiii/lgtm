@@ -2,6 +2,7 @@ package lgtm
 
 import (
 	"bytes"
+	_ "embed"
 	"image"
 	"image/png"
 )

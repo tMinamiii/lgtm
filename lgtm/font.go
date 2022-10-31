@@ -1,6 +1,8 @@
 package lgtm
 
 import (
+	_ "embed"
+
 	"golang.org/x/image/font"
 	"golang.org/x/image/font/opentype"
 )
