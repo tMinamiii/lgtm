@@ -10,14 +10,6 @@ type Point struct {
 	Y float64
 }
 
-type FontName string
-
-const (
-	NotSans  FontName = "NotoSans"
-	NotSerif FontName = "NotoSerif"
-	LINESeed FontName = "LINESeed"
-)
-
 type MessageType string
 
 const (
