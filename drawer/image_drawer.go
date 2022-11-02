@@ -161,7 +161,7 @@ func (t *TextDrawer) embedString(img image.Image, text *object.Text) (image.Imag
 	}()
 
 	pt := text.Point(img)
-	dc.DrawStringWrapped(text.Text, pt.X, pt.Y, 0.5, 0.5, maxWidth, 1.5, gg.AlignCenter)
+	dc.DrawStringWrapped(text.Text.String(), pt.X, pt.Y, 0.5, 0.5, maxWidth, 1.5, gg.AlignCenter)
 
 	return dc.Image(), nil
 }

@@ -3,13 +3,36 @@ package object
 import (
 	"image"
 	"image/color"
+	"strings"
 	"unicode"
 )
 
 const (
-	DefaultMainText = "L G T M"
-	DefaultSubText  = "L o o k s   G o o d   T o   M e"
+	DefaultMainText string = "LGTM"
+	DefaultSubText  string = "Looks Good To Me"
 )
+
+type PaddingText string
+
+func (p PaddingText) String() string {
+	b := &strings.Builder{}
+	space := ' '
+	for i, v := range p {
+		b.WriteRune(v)
+		if len(p)-1 == i {
+			break
+		}
+		b.WriteRune(space)
+	}
+	return b.String()
+}
+
+func (p PaddingText) HasJP() bool {
+	for _, v := range p {
+		return unicode.In(v, unicode.Hiragana, unicode.Katakana, unicode.Han)
+	}
+	return false
+}
 
 type TextColor color.Gray16
 
@@ -35,7 +58,7 @@ const (
 )
 
 type Text struct {
-	Text        string
+	Text        PaddingText
 	Font        Font
 	MessageType MessageType
 	TextColor   TextColor
@@ -43,44 +66,37 @@ type Text struct {
 
 func NewText(text string, font Font, messageType MessageType, textColor TextColor) *Text {
 	return &Text{
-		Text:        text,
+		Text:        PaddingText(text),
 		Font:        font,
 		MessageType: messageType,
 		TextColor:   textColor,
 	}
 }
 
-func (t *Text) FontSize(img image.Image, text string) float64 {
+func (t *Text) FontSize(img image.Image, text PaddingText) float64 {
 	switch t.MessageType {
 	case MessageTypeMain:
-		textLength := len(DefaultMainText)
-		if len(text) > len(DefaultMainText) {
+		textLength := len(PaddingText(DefaultMainText).String())
+		if len(text) > textLength {
 			textLength = len(text)
 		}
 		imageWidth := img.Bounds().Dx()
-		if t.hasJP(text) {
+		if text.HasJP() {
 			return float64(imageWidth*7) / (6 * float64(textLength) / 1.8)
 		}
 		return float64(imageWidth*7) / (6 * float64(textLength))
 	case MessageTypeSub:
-		textLength := len(DefaultSubText)
-		if len(text) > len(DefaultSubText) {
+		textLength := len(PaddingText(DefaultSubText).String())
+		if len(text) > textLength {
 			textLength = len(text)
 		}
 		imageWidth := img.Bounds().Dx()
-		if t.hasJP(text) {
+		if text.HasJP() {
 			return float64(imageWidth*32) / (22 * float64(textLength) / 1.3)
 		}
 		return float64(imageWidth*32) / (22 * float64(textLength))
 	}
 	return 0
-}
-
-func (t *Text) hasJP(text string) bool {
-	for _, v := range text {
-		return unicode.In(v, unicode.Hiragana, unicode.Katakana, unicode.Han)
-	}
-	return false
 }
 
 func (t *Text) Point(img image.Image) *Point {
