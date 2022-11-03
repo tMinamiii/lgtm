@@ -29,7 +29,9 @@ func (p PaddingText) String() string {
 
 func (p PaddingText) HasJP() bool {
 	for _, v := range p {
-		return unicode.In(v, unicode.Hiragana, unicode.Katakana, unicode.Han)
+		if unicode.In(v, unicode.Hiragana, unicode.Katakana, unicode.Han) {
+			return true
+		}
 	}
 	return false
 }

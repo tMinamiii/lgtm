@@ -9,6 +9,14 @@ require (
 	golang.org/x/image v0.0.0-20220902085622-e7cb96979f69
 )
 
-require github.com/disintegration/imaging v1.6.2
+require (
+	github.com/disintegration/imaging v1.6.2
+	github.com/stretchr/testify v1.8.1
+)
 
-require golang.org/x/text v0.3.7 // indirect
+require (
+	github.com/davecgh/go-spew v1.1.1 // indirect
+	github.com/pmezard/go-difflib v1.0.0 // indirect
+	golang.org/x/text v0.3.7 // indirect
+	gopkg.in/yaml.v3 v3.0.1 // indirect
+)
