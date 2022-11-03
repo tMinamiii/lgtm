@@ -7,7 +7,7 @@ jobs:
         runs-on: ubuntu-latest
         steps:
             - name: Code Coverage Summary
-              uses: irongut/CodeCoverageSummary@v2.3.0
+              uses: irongut/CodeCoverageSummary@v1.3.0
               with:
                   filename: coverage/**/coverage.cobertura.xml
                   format: markdown
