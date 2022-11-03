@@ -1,12 +1,16 @@
 name: tagpr
 on:
-  push:
-    branches: ["main"]
+    push:
+        branches: ["main"]
 jobs:
-  tagpr:
-    runs-on: ubuntu-latest
-    steps:
-    - uses: actions/checkout@v3
-    - uses: Songmu/tagpr@v1
-      env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+    tagpr:
+        runs-on: ubuntu-latest
+        steps:
+            - uses: actions/checkout@v3
+            - uses: Songmu/tagpr@v1
+              env:
+                  GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+            - name: Code Coverage Summary
+              uses: irongut/CodeCoverageSummary@v1.3.0
+              with:
+                  filename: coverage.cobertura.xml
