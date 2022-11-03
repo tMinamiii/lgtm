@@ -1,0 +1,14 @@
+name: build
+on:
+    push:
+        branches: ["main"]
+jobs:
+    build:
+        runs-on: ubuntu-latest
+        steps:
+            - name: Code Coverage Summary
+              uses: irongut/CodeCoverageSummary@v2.3.0
+              with:
+                  filename: coverage/**/coverage.cobertura.xml
+                  format: markdown
+                  badge: true
