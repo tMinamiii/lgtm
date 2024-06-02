@@ -23,7 +23,7 @@ var (
 func (f Font) FontFace(size float64) (font.Face, error) {
 	opts := &opentype.FaceOptions{
 		Size:    size,
-		DPI:     72,
+		DPI:     108,
 		Hinting: font.HintingNone,
 	}
 

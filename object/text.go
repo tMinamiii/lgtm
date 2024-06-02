@@ -75,30 +75,15 @@ func NewText(text string, font Font, messageType MessageType, textColor TextColo
 	}
 }
 
-func (t *Text) FontSize(img image.Image, text PaddingText) float64 {
-	switch t.MessageType {
-	case MessageTypeMain:
-		textLength := len(PaddingText(DefaultMainText).String())
-		if len(text) > textLength {
-			textLength = len(text)
-		}
-		imageWidth := img.Bounds().Dx()
-		if text.HasJP() {
-			return float64(imageWidth*7) / (6 * float64(textLength) / 1.8)
-		}
-		return float64(imageWidth*7) / (6 * float64(textLength))
-	case MessageTypeSub:
-		textLength := len(PaddingText(DefaultSubText).String())
-		if len(text) > textLength {
-			textLength = len(text)
-		}
-		imageWidth := img.Bounds().Dx()
-		if text.HasJP() {
-			return float64(imageWidth*32) / (22 * float64(textLength) / 1.3)
-		}
-		return float64(imageWidth*32) / (22 * float64(textLength))
-	}
-	return 0
+func (t *Text) toPT(px float64) float64 {
+	return px / (float64(96) / float64(72))
+}
+
+func (t *Text) FontSizePt(img image.Image, text PaddingText) float64 {
+	imageWidthPx := img.Bounds().Dx()
+	textAreaWidthPx := float64(imageWidthPx)
+	textLength := len(text.String())
+	return t.toPT(textAreaWidthPx) / float64(textLength)
 }
 
 func (t *Text) Point(img image.Image) *Point {
