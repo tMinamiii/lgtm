@@ -22,18 +22,12 @@ lgtm -h
 Usage of lgtm:
   -c string
         color 'white' or 'black' (default "white")
+  -f string
+        sans, serif, line (default "sans")
   -gopher
         embed gopher
   -i string
         image file path
-  -line
-        LINE seed font
-  -main string
-        main text (default "L G T M")
-  -serif
-        Noto serif font
-  -sub string
-        sub text (default "L o o k s   G o o d   T o   M e")
 ```
 
 ### Example

@@ -10,12 +10,9 @@ import (
 )
 
 func main() {
-	mainText := flag.String("main", object.DefaultMainText, "main text")
-	subText := flag.String("sub", object.DefaultSubText, "sub text")
 	path := flag.String("i", "", "image file path")
 	color := flag.String("c", "white", "color 'white' or 'black'")
-	line := flag.Bool("line", false, "LINE seed font")
-	serif := flag.Bool("serif", false, "Noto serif font")
+	fontName := flag.String("f", "sans", "sans, serif, line")
 	gopher := flag.Bool("gopher", false, "embed gopher")
 	flag.Parse()
 
@@ -38,9 +35,9 @@ func main() {
 		textColor = object.TextColorBlack
 	}
 
-	font := getFont(*serif, *line)
-	main := object.NewText(*mainText, font, object.MessageTypeMain, textColor)
-	sub := object.NewText(*subText, font, object.MessageTypeSub, textColor)
+	font := getFont(*fontName)
+	main := object.NewText(object.DefaultMainText, font, object.MessageTypeMain, textColor)
+	sub := object.NewText(object.DefaultSubText, font, object.MessageTypeSub, textColor)
 
 	d := drawer.NewTextDrawer(main, sub)
 	if err := d.Draw(*path); err != nil {
@@ -49,12 +46,14 @@ func main() {
 	}
 }
 
-func getFont(isSerif, isLine bool) object.Font {
-	switch {
-	case isSerif:
+func getFont(fontName string) object.Font {
+	switch fontName {
+	case "serif":
 		return object.NotoSerifJP
-	case isLine:
+	case "line":
 		return object.LINESeedJP
+	case "sans":
+		return object.NotoSansJP
 	default:
 		return object.NotoSansJP
 	}

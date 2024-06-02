@@ -75,15 +75,10 @@ func NewText(text string, font Font, messageType MessageType, textColor TextColo
 	}
 }
 
-func (t *Text) toPT(px float64) float64 {
-	return px / (float64(96) / float64(72))
-}
-
-func (t *Text) FontSizePt(img image.Image, text PaddingText) float64 {
-	imageWidthPx := img.Bounds().Dx()
-	textAreaWidthPx := float64(imageWidthPx)
+func (t *Text) FontSize(img image.Image, text PaddingText) float64 {
+	imageWidth := img.Bounds().Dx()
 	textLength := len(text.String())
-	return t.toPT(textAreaWidthPx) / float64(textLength)
+	return float64(imageWidth) / float64(textLength)
 }
 
 func (t *Text) Point(img image.Image) *Point {
