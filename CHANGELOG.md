@@ -1,5 +1,7 @@
 # Changelog
 
+## [v0.1.33](https://github.com/tMinamiii/lgtm/compare/v0.1.32...v0.1.33) - 2024-06-03
+
 ## [v0.1.32](https://github.com/tMinamiii/lgtm/compare/v0.1.31...v0.1.32) - 2024-06-03
 
 ## [v0.1.31](https://github.com/tMinamiii/lgtm/compare/v0.1.30...v0.1.31) - 2024-06-02
