@@ -33,7 +33,7 @@ Usage of lgtm:
 Output `image-lgtm.jpeg` when run below command.
 
 ```sh
-lgtm -i image.jpeg -c white
+lgtm -c white image.jpeg
 ```
 
 ## License
