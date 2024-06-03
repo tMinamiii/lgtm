@@ -26,8 +26,6 @@ Usage of lgtm:
         sans, serif, line (default "sans")
   -gopher
         embed gopher
-  -i string
-        image file path
 ```
 
 ### Example
