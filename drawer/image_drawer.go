@@ -144,7 +144,7 @@ func (t *TextDrawer) embedString(img image.Image, text *object.Text) (image.Imag
 	dc := gg.NewContext(imgWidth, imgHeight)
 	dc.DrawImage(img, 0, 0)
 
-	fontSize := text.FontSize(img, text.Text)
+	fontSize := text.FontSize(img)
 	face, err := text.Font.FontFace(fontSize)
 	if err != nil {
 		return nil, errors.Wrapf(err, "failed to parse font %s", err.Error())
