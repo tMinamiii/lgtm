@@ -23,7 +23,7 @@ Usage of lgtm:
   -c string
         color 'white' or 'black' (default "white")
   -f string
-        sans, serif, line (default "sans")
+        sans, line (default "sans")
   -gopher
         embed gopher
 ```
