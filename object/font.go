@@ -10,11 +10,8 @@ import (
 type Font []byte
 
 var (
-	//go:embed data/NotoSansJP-Bold.otf
-	NotoSansJP Font
-
-	//go:embed data/NotoSerifJP-Bold.otf
-	NotoSerifJP Font
+	//go:embed data/NotoSansMono-Bold.otf
+	NotoSansMono Font
 
 	//go:embed data/LINESeedJP_OTF_Bd.otf
 	LINESeedJP Font

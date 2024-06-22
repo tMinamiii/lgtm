@@ -18,7 +18,7 @@ const (
 
 func main() {
 	color := flag.String("c", "white", "color 'white' or 'black'")
-	fontName := flag.String("f", "sans", "sans, serif, line")
+	fontName := flag.String("f", "sans", "sans, line")
 	gopher := flag.Bool("gopher", false, "embed gopher")
 	flag.Parse()
 
@@ -50,14 +50,12 @@ func main() {
 
 func getFont(fontName string) object.Font {
 	switch fontName {
-	case "serif":
-		return object.NotoSerifJP
 	case "line":
 		return object.LINESeedJP
 	case "sans":
-		return object.NotoSansJP
+		return object.NotoSansMono
 	default:
-		return object.NotoSansJP
+		return object.NotoSansMono
 	}
 }
 

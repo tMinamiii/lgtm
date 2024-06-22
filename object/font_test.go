@@ -17,15 +17,8 @@ func TestFont_FontFace(t *testing.T) {
 		args args
 	}{
 		{
-			name: "NotoSansJPフォントが埋め込まれているかテスト",
-			f:    NotoSansJP,
-			args: args{
-				size: 10,
-			},
-		},
-		{
-			name: "NotoSerifJPフォントが埋め込まれているかテスト",
-			f:    NotoSerifJP,
+			name: "NotoSansMonoフォントが埋め込まれているかテスト",
+			f:    NotoSansMono,
 			args: args{
 				size: 10,
 			},
