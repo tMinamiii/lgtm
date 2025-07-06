@@ -133,9 +133,12 @@ func (t *TextDrawer) embedTexts(i image.Image) (image.Image, error) {
 		return nil, err
 	}
 
-	img, err = t.embedString(img, t.SubText)
-	if err != nil {
-		return nil, err
+	// サブテキストが空でない場合のみ描画
+	if t.SubText.Text.String() != "" {
+		img, err = t.embedString(img, t.SubText)
+		if err != nil {
+			return nil, err
+		}
 	}
 
 	return img, nil
@@ -156,15 +159,10 @@ func (t *TextDrawer) embedString(img image.Image, text *object.Text) (image.Imag
 
 	dc.SetColor(text.TextColor.Gray16())
 
-	maxWidth := func() float64 {
-		if imgWidth > 640 {
-			return float64(imgWidth) - 60.0
-		}
-		return float64(imgWidth)
-	}()
-
 	pt := text.Point(img)
-	dc.DrawStringWrapped(text.Text.String(), pt.X, pt.Y, 0.5, 0.5, maxWidth, 1.5, gg.AlignCenter)
+	// 1行制限: DrawStringAnchoredを使用して改行を防ぐ
+	// 中央揃えで描画（0.5, 0.5 = 中央基準点）
+	dc.DrawStringAnchored(text.Text.String(), pt.X, pt.Y, 0.5, 0.5)
 
 	return dc.Image(), nil
 }

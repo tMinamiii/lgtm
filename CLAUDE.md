@@ -4,7 +4,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Project Overview
 
-This is a Go CLI tool called "lgtm" that embeds "LGTM" text on images with customizable colors and fonts. The tool can also embed a gopher image and outputs the result as a JPEG file. Uses Cobra for modern CLI interface. When no output path is specified with `-o`, files are saved to the current directory.
+This is a Go CLI tool called "lgtm" that embeds custom text on images with customizable colors and fonts. By default it embeds "LGTM" as main text and "Looks Good To Me" as sub-text, but users can customize both using the `--text` and `--sub-text` flags. The tool can also embed a gopher image and outputs the result as a JPEG file. Uses Cobra for modern CLI interface. When no output path is specified with `-o`, files are saved to the current directory.
 
 ## Development Commands
 
@@ -25,14 +25,23 @@ go install github.com/tMinamiii/lgtm@latest
 
 ### CLI Usage Examples
 ```bash
-# Basic usage
+# Basic usage (embeds "LGTM" and "Looks Good To Me")
 ./lgtm -i image.jpg
 
+# With custom main text only
+./lgtm -i image.jpg -t "Hello World"
+
+# With custom sub-text only
+./lgtm -i image.jpg -s "Custom subtitle"
+
+# With both custom main and sub-text
+./lgtm -i image.jpg -t "Hello" -s "World"
+
 # With output path specification
-./lgtm -i image.jpg -o output.jpg
+./lgtm -i image.jpg -o output.jpg -t "Custom Text" -s "Custom Sub"
 
 # With color and font options
-./lgtm -i image.jpg -c black -f line -o custom.jpg
+./lgtm -i image.jpg -c black -f line -t "My Message" -s "My Subtitle"
 
 # Gopher mode
 ./lgtm -i image.jpg --gopher
@@ -76,7 +85,7 @@ The codebase follows a clean architecture pattern with three main packages:
 
 ### Key Architecture Patterns
 - **Interface-based design**: The `Drawer` interface with `Draw(inputPath, outputPath string) error` method allows different drawing strategies
-- **Two drawing modes**: Text-based LGTM embedding vs. gopher image embedding
+- **Two drawing modes**: Custom text embedding (default "LGTM") vs. gopher image embedding
 - **Font abstraction**: Supports multiple font types (NotoSansMono, LINESeedJP) through embedded `Font` type using Go's `//go:embed` directive
 - **Color theming**: Supports white and black text colors via `TextColor` type
 - **Adaptive text sizing**: Dynamic font sizing based on image dimensions, text length, and message type (main/sub)
@@ -85,7 +94,7 @@ The codebase follows a clean architecture pattern with three main packages:
 ### Data Flow
 1. Cobra CLI framework parses flags including required `-i` input path in `main.go`
 2. Based on `--gopher` flag, either `GopherDrawer` or `TextDrawer` is instantiated
-3. For text mode: `Text` objects are created with specified font, color, and message type
+3. For text mode: `Text` objects are created with custom main text (or default "LGTM") and custom sub-text (or default "Looks Good To Me"), specified font, color, and message type
 4. Drawer processes the input image and outputs to specified path or auto-generated filename in current directory
 5. Text sizing algorithm considers image aspect ratio, safe area calculations, and text length for optimal placement
 

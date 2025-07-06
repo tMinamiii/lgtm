@@ -11,24 +11,24 @@ import (
 )
 
 var (
-	color      string
-	fontName   string
-	gopher     bool
-	inputPath  string
-	outputPath string
+	color         string
+	fontName      string
+	gopher        bool
+	inputPath     string
+	outputPath    string
+	customText    string
+	customSubText string
 )
 
 var rootCmd = &cobra.Command{
 	Use:   "lgtm [flags]",
-	Short: "Embed 'LGTM' text or gopher image on images",
-	Long: `LGTM is a CLI tool that embeds "LGTM" text on images with customizable colors and fonts.
-It can also embed a gopher image and outputs the result as a JPEG file.`,
+	Short: "Embed custom text or gopher image on images",
+	Long: `LGTM is a CLI tool that embeds custom text on images with customizable colors and fonts.
+It can also embed a gopher image and outputs the result as a JPEG file.
+By default, it embeds "LGTM" as main text and "Looks Good To Me" as sub-text.
+You can customize both using the --text and --sub-text flags.`,
 	Args: cobra.NoArgs,
 	Run: func(cmd *cobra.Command, args []string) {
-		if inputPath == "" {
-			log.Fatal("input image path is required, use -i flag")
-		}
-
 		if gopher {
 			d := drawer.NewGopherDrawer()
 			if err := d.Draw(inputPath, outputPath); err != nil {
@@ -43,8 +43,20 @@ It can also embed a gopher image and outputs the result as a JPEG file.`,
 		}
 
 		font := getFont(fontName)
-		main := object.NewText(object.DefaultMainText, font, object.MessageTypeMain, textColor)
-		sub := object.NewText(object.DefaultSubText, font, object.MessageTypeSub, textColor)
+
+		mainText := object.DefaultMainText
+		subText := object.DefaultSubText
+
+		if customText != "" {
+			mainText = customText
+		}
+
+		if customSubText != "" {
+			subText = customSubText
+		}
+
+		main := object.NewText(mainText, font, object.MessageTypeMain, textColor)
+		sub := object.NewText(subText, font, object.MessageTypeSub, textColor)
 
 		d := drawer.NewTextDrawer(main, sub)
 		if err := d.Draw(inputPath, outputPath); err != nil {
@@ -54,11 +66,17 @@ It can also embed a gopher image and outputs the result as a JPEG file.`,
 }
 
 func init() {
-	rootCmd.Flags().StringVarP(&color, "color", "c", "white", "text color: 'white' or 'black'")
-	rootCmd.Flags().StringVarP(&fontName, "font", "f", "sans", "font type: 'sans' or 'line'")
-	rootCmd.Flags().BoolVar(&gopher, "gopher", false, "embed gopher image instead of text")
-	rootCmd.Flags().StringVarP(&inputPath, "input", "i", "", "input image path")
-	rootCmd.Flags().StringVarP(&outputPath, "output", "o", "", "output file path")
+	// Required flags
+	rootCmd.Flags().StringVarP(&inputPath, "input", "i", "", "input image path (required)")
+	rootCmd.MarkFlagRequired("input")
+
+	// Optional flags
+	rootCmd.Flags().StringVarP(&outputPath, "output", "o", "", "output file path (optional, default: current directory with auto-generated filename)")
+	rootCmd.Flags().StringVarP(&customText, "text", "t", "", "custom text to embed (optional, default: 'LGTM')")
+	rootCmd.Flags().StringVarP(&customSubText, "sub-text", "s", "", "custom sub-text to embed (optional, default: 'Looks Good To Me')")
+	rootCmd.Flags().StringVarP(&color, "color", "c", "white", "text color: 'white' or 'black' (optional)")
+	rootCmd.Flags().StringVarP(&fontName, "font", "f", "sans", "font type: 'sans' or 'line' (optional)")
+	rootCmd.Flags().BoolVar(&gopher, "gopher", false, "embed gopher image instead of text (optional)")
 }
 
 func main() {

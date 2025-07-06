@@ -20,6 +20,27 @@ jobs:
                   go test -v ./... -covermode=count -coverprofile=coverage.out
                   go tool cover -func=coverage.out -o=coverage.out
 
+            - name: Build LGTM tool
+              run: go build -o lgtm
+
+            - name: Generate test images
+              run: |
+                  mkdir -p test/images test/results
+                  # Create simple test images using ImageMagick (available on ubuntu-latest)
+                  sudo apt-get update && sudo apt-get install -y imagemagick
+                  convert -size 300x300 gradient:blue-red test/images/test_square.jpg
+                  convert -size 600x200 gradient:green-yellow test/images/test_wide.jpg
+                  convert -size 200x600 gradient:red-blue test/images/test_tall.jpg
+                  convert -size 100x100 gradient:black-white test/images/test_small.jpg
+
+            - name: Run LGTM on test images
+              run: |
+                  for img in test/images/*.jpg; do
+                    basename=$(basename "$img" .jpg)
+                    echo "Processing: $img"
+                    ./lgtm -i "$img" -o "test/results/result_${basename}.jpg"
+                  done
+
             - name: Go Coverage Badge  # Pass the `coverage.out` output to this action
               uses: tj-actions/coverage-badge-go@v2
               with:
@@ -29,19 +50,21 @@ jobs:
               uses: tj-actions/verify-changed-files@v16
               id: verify-changed-files
               with:
-                files: README.md
+                files: |
+                  README.md
+                  test/results/
 
             - name: Commit changes
               if: steps.verify-changed-files.outputs.files_changed == 'true'
               run: |
                 git config --local user.email "action@github.com"
                 git config --local user.name "GitHub Action"
-                git add README.md
-                git commit -m "chore: Updated coverage badge."
+                git add README.md test/results/
+                git commit -m "chore: Updated coverage badge and LGTM test results."
 
             - name: Push changes
               if: steps.verify-changed-files.outputs.files_changed == 'true'
               uses: ad-m/github-push-action@master
               with:
                 github_token: ${{ github.token }}
-                branch: ${{ github.head_ref }}
+                branch: main

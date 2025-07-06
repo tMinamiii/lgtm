@@ -16,19 +16,23 @@ go install github.com/tMinamiii/lgtm@latest
 ```sh
 lgtm --help
 
-LGTM is a CLI tool that embeds "LGTM" text on images with customizable colors and fonts.
+LGTM is a CLI tool that embeds custom text on images with customizable colors and fonts.
 It can also embed a gopher image and outputs the result as a JPEG file.
+By default, it embeds "LGTM" as main text and "Looks Good To Me" as sub-text.
+You can customize both using the --text and --sub-text flags.
 
 Usage:
   lgtm [flags]
 
 Flags:
-  -c, --color string    text color: 'white' or 'black' (default "white")
-  -f, --font string     font type: 'sans' or 'line' (default "sans")
-      --gopher          embed gopher image instead of text
-  -h, --help            help for lgtm
-  -i, --input string    input image path
-  -o, --output string   output file path
+  -c, --color string      text color: 'white' or 'black' (optional) (default "white")
+  -f, --font string       font type: 'sans' or 'line' (optional) (default "sans")
+      --gopher            embed gopher image instead of text (optional)
+  -h, --help              help for lgtm
+  -i, --input string      input image path (required)
+  -o, --output string     output file path (optional, default: current directory with auto-generated filename)
+  -s, --sub-text string   custom sub-text to embed (optional, default: 'Looks Good To Me')
+  -t, --text string       custom text to embed (optional, default: 'LGTM')
 ```
 
 ### Examples
@@ -36,14 +40,23 @@ Flags:
 Output `image-lgtm.jpeg` in the current directory when run below command.
 
 ```sh
-# Basic usage
+# Basic usage (embeds "LGTM" and "Looks Good To Me")
 lgtm -i image.jpeg
 
+# With custom main text only
+lgtm -i image.jpeg -t "Hello World"
+
+# With custom sub-text only
+lgtm -i image.jpeg -s "Custom subtitle"
+
+# With both custom main and sub-text
+lgtm -i image.jpeg -t "Hello" -s "World"
+
 # With custom color and font
-lgtm -i image.jpeg -c black -f line
+lgtm -i image.jpeg -c black -f line -t "Custom Text" -s "Custom Sub"
 
 # With custom output path
-lgtm -i image.jpeg -o output.jpg
+lgtm -i image.jpeg -o output.jpg -t "My Text" -s "My Subtitle"
 
 # Gopher mode
 lgtm -i image.jpeg --gopher
