@@ -6,8 +6,7 @@ import (
 	"os"
 
 	"github.com/spf13/cobra"
-	"github.com/tMinamiii/lgtm/drawer"
-	"github.com/tMinamiii/lgtm/object"
+	"github.com/tMinamiii/lgtm-core"
 )
 
 var (
@@ -29,20 +28,20 @@ You can customize both using the --text and --sub-text flags.`,
 	Args: cobra.NoArgs,
 	Run: func(cmd *cobra.Command, args []string) {
 		if gopher {
-			d := drawer.NewGopherDrawer()
-			if err := d.Draw(inputPath, outputPath); err != nil {
+			d := lgtm.NewGopherDrawer(inputPath, outputPath)
+			if err := d.Draw(); err != nil {
 				log.Fatal(err)
 			}
 			return
 		}
 
-		textColor := object.TextColorWhite
+		textColor := lgtm.TextColorWhite
 		if color == "black" {
-			textColor = object.TextColorBlack
+			textColor = lgtm.TextColorBlack
 		}
 
-		mainText := object.DefaultMainText
-		subText := object.DefaultSubText
+		mainText := lgtm.DefaultMainText
+		subText := lgtm.DefaultSubText
 
 		if customText != "" {
 			mainText = customText
@@ -52,11 +51,11 @@ You can customize both using the --text and --sub-text flags.`,
 			subText = customSubText
 		}
 
-		main := object.NewText(mainText, object.MessageTypeMain, textColor)
-		sub := object.NewText(subText, object.MessageTypeSub, textColor)
+		main := lgtm.NewMainText(mainText, textColor)
+		sub := lgtm.NewSubText(subText, textColor)
 
-		d := drawer.NewTextDrawer(main, sub)
-		if err := d.Draw(inputPath, outputPath); err != nil {
+		d := lgtm.NewTextDrawer(main, sub, inputPath, outputPath)
+		if err := d.Draw(); err != nil {
 			log.Fatal(err)
 		}
 	},
