@@ -1,5 +1,3 @@
-![Code Coverage](https://img.shields.io/badge/Code%20Coverage-33%25-critical?style=flat)
-
 # lgtm
 
 lgtm embeds `LGTM` string on an image.
