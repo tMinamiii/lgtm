@@ -66,10 +66,10 @@ type Text struct {
 	TextColor   TextColor
 }
 
-func NewText(text string, font Font, messageType MessageType, textColor TextColor) *Text {
+func NewText(text string, messageType MessageType, textColor TextColor) *Text {
 	return &Text{
 		Text:        PaddingText(text),
-		Font:        font,
+		Font:        NotoSansMono,
 		MessageType: messageType,
 		TextColor:   textColor,
 	}

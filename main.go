@@ -52,8 +52,8 @@ You can customize both using the --text and --sub-text flags.`,
 			subText = customSubText
 		}
 
-		main := object.NewText(mainText, object.NotoSansMono, object.MessageTypeMain, textColor)
-		sub := object.NewText(subText, object.NotoSansMono, object.MessageTypeSub, textColor)
+		main := object.NewText(mainText, object.MessageTypeMain, textColor)
+		sub := object.NewText(subText, object.MessageTypeSub, textColor)
 
 		d := drawer.NewTextDrawer(main, sub)
 		if err := d.Draw(inputPath, outputPath); err != nil {
