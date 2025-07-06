@@ -14,17 +14,20 @@ var (
 	color      string
 	fontName   string
 	gopher     bool
+	inputPath  string
 	outputPath string
 )
 
 var rootCmd = &cobra.Command{
-	Use:   "lgtm [flags] <image-path>",
+	Use:   "lgtm [flags]",
 	Short: "Embed 'LGTM' text or gopher image on images",
 	Long: `LGTM is a CLI tool that embeds "LGTM" text on images with customizable colors and fonts.
 It can also embed a gopher image and outputs the result as a JPEG file.`,
-	Args: cobra.ExactArgs(1),
+	Args: cobra.NoArgs,
 	Run: func(cmd *cobra.Command, args []string) {
-		inputPath := args[0]
+		if inputPath == "" {
+			log.Fatal("input image path is required, use -i flag")
+		}
 
 		if gopher {
 			d := drawer.NewGopherDrawer()
@@ -54,6 +57,7 @@ func init() {
 	rootCmd.Flags().StringVarP(&color, "color", "c", "white", "text color: 'white' or 'black'")
 	rootCmd.Flags().StringVarP(&fontName, "font", "f", "sans", "font type: 'sans' or 'line'")
 	rootCmd.Flags().BoolVar(&gopher, "gopher", false, "embed gopher image instead of text")
+	rootCmd.Flags().StringVarP(&inputPath, "input", "i", "", "input image path")
 	rootCmd.Flags().StringVarP(&outputPath, "output", "o", "", "output file path")
 }
 

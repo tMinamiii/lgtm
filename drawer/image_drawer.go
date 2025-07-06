@@ -61,7 +61,7 @@ func (t *TextDrawer) newFilename(inputPath, outputPath, ext string) string {
 	filename := filepath.Base(inputPath)
 	name := strings.Split(filename, ".")[0]
 	suffix := "lgtm"
-	return fmt.Sprintf("%s-%s.%s", name, suffix, ext)
+	return filepath.Join(".", fmt.Sprintf("%s-%s.%s", name, suffix, ext))
 }
 
 func (t *TextDrawer) drawOnGIF(inputPath, outputPath string) error {

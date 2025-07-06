@@ -4,7 +4,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Project Overview
 
-This is a Go CLI tool called "lgtm" that embeds "LGTM" text on images with customizable colors and fonts. The tool can also embed a gopher image and outputs the result as a JPEG file. Uses Cobra for modern CLI interface.
+This is a Go CLI tool called "lgtm" that embeds "LGTM" text on images with customizable colors and fonts. The tool can also embed a gopher image and outputs the result as a JPEG file. Uses Cobra for modern CLI interface. When no output path is specified with `-o`, files are saved to the current directory.
 
 ## Development Commands
 
@@ -14,7 +14,7 @@ This is a Go CLI tool called "lgtm" that embeds "LGTM" text on images with custo
 go build -o lgtm
 
 # Run directly with cobra
-go run main.go [flags] <image-path>
+go run main.go [flags]
 
 # Install globally
 go install github.com/tMinamiii/lgtm@latest
@@ -26,16 +26,16 @@ go install github.com/tMinamiii/lgtm@latest
 ### CLI Usage Examples
 ```bash
 # Basic usage
-./lgtm image.jpg
+./lgtm -i image.jpg
 
 # With output path specification
-./lgtm -o output.jpg image.jpg
+./lgtm -i image.jpg -o output.jpg
 
 # With color and font options
-./lgtm -c black -f line -o custom.jpg image.jpg
+./lgtm -i image.jpg -c black -f line -o custom.jpg
 
 # Gopher mode
-./lgtm --gopher image.jpg
+./lgtm -i image.jpg --gopher
 ```
 
 ### Testing
@@ -80,13 +80,13 @@ The codebase follows a clean architecture pattern with three main packages:
 - **Font abstraction**: Supports multiple font types (NotoSansMono, LINESeedJP) through embedded `Font` type using Go's `//go:embed` directive
 - **Color theming**: Supports white and black text colors via `TextColor` type
 - **Adaptive text sizing**: Dynamic font sizing based on image dimensions, text length, and message type (main/sub)
-- **Output path control**: Configurable output destination with fallback to auto-generated filenames
+- **Output path control**: Configurable output destination with fallback to auto-generated filenames in current directory
 
 ### Data Flow
-1. Cobra CLI framework parses flags and validates arguments in `main.go`
+1. Cobra CLI framework parses flags including required `-i` input path in `main.go`
 2. Based on `--gopher` flag, either `GopherDrawer` or `TextDrawer` is instantiated
 3. For text mode: `Text` objects are created with specified font, color, and message type
-4. Drawer processes the input image and outputs to specified path or auto-generated filename
+4. Drawer processes the input image and outputs to specified path or auto-generated filename in current directory
 5. Text sizing algorithm considers image aspect ratio, safe area calculations, and text length for optimal placement
 
 ### Text Sizing Logic

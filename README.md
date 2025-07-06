@@ -14,23 +14,39 @@ go install github.com/tMinamiii/lgtm@latest
 ## Usage
 
 ```sh
-lgtm -h
+lgtm --help
 
-Usage of lgtm:
-  -c string
-        color 'white' or 'black' (default "white")
-  -f string
-        sans, line (default "sans")
-  -gopher
-        embed gopher
+LGTM is a CLI tool that embeds "LGTM" text on images with customizable colors and fonts.
+It can also embed a gopher image and outputs the result as a JPEG file.
+
+Usage:
+  lgtm [flags]
+
+Flags:
+  -c, --color string    text color: 'white' or 'black' (default "white")
+  -f, --font string     font type: 'sans' or 'line' (default "sans")
+      --gopher          embed gopher image instead of text
+  -h, --help            help for lgtm
+  -i, --input string    input image path
+  -o, --output string   output file path
 ```
 
-### Example
+### Examples
 
-Output `image-lgtm.jpeg` when run below command.
+Output `image-lgtm.jpeg` in the current directory when run below command.
 
 ```sh
-lgtm -c white image.jpeg
+# Basic usage
+lgtm -i image.jpeg
+
+# With custom color and font
+lgtm -i image.jpeg -c black -f line
+
+# With custom output path
+lgtm -i image.jpeg -o output.jpg
+
+# Gopher mode
+lgtm -i image.jpeg --gopher
 ```
 
 ## License
