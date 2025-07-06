@@ -11,7 +11,7 @@ require (
 
 require (
 	github.com/spf13/cobra v1.9.1
-	github.com/tMinamiii/lgtm-core v0.0.0-20250706163426-59818a51740e
+	github.com/tMinamiii/lgtm-core v0.0.1
 )
 
 require (
