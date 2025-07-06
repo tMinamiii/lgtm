@@ -23,13 +23,6 @@ func TestFont_FontFace(t *testing.T) {
 				size: 10,
 			},
 		},
-		{
-			name: "LINESeedJPフォントが埋め込まれているかテスト",
-			f:    LINESeedJP,
-			args: args{
-				size: 10,
-			},
-		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {

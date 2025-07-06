@@ -12,7 +12,6 @@ import (
 
 var (
 	color         string
-	fontName      string
 	gopher        bool
 	inputPath     string
 	outputPath    string
@@ -23,7 +22,7 @@ var (
 var rootCmd = &cobra.Command{
 	Use:   "lgtm [flags]",
 	Short: "Embed custom text or gopher image on images",
-	Long: `LGTM is a CLI tool that embeds custom text on images with customizable colors and fonts.
+	Long: `LGTM is a CLI tool that embeds custom text on images with customizable colors.
 It can also embed a gopher image and outputs the result as a JPEG file.
 By default, it embeds "LGTM" as main text and "Looks Good To Me" as sub-text.
 You can customize both using the --text and --sub-text flags.`,
@@ -42,8 +41,6 @@ You can customize both using the --text and --sub-text flags.`,
 			textColor = object.TextColorBlack
 		}
 
-		font := getFont(fontName)
-
 		mainText := object.DefaultMainText
 		subText := object.DefaultSubText
 
@@ -55,8 +52,8 @@ You can customize both using the --text and --sub-text flags.`,
 			subText = customSubText
 		}
 
-		main := object.NewText(mainText, font, object.MessageTypeMain, textColor)
-		sub := object.NewText(subText, font, object.MessageTypeSub, textColor)
+		main := object.NewText(mainText, object.NotoSansMono, object.MessageTypeMain, textColor)
+		sub := object.NewText(subText, object.NotoSansMono, object.MessageTypeSub, textColor)
 
 		d := drawer.NewTextDrawer(main, sub)
 		if err := d.Draw(inputPath, outputPath); err != nil {
@@ -75,7 +72,6 @@ func init() {
 	rootCmd.Flags().StringVarP(&customText, "text", "t", "", "custom text to embed (optional, default: 'LGTM')")
 	rootCmd.Flags().StringVarP(&customSubText, "sub-text", "s", "", "custom sub-text to embed (optional, default: 'Looks Good To Me')")
 	rootCmd.Flags().StringVarP(&color, "color", "c", "white", "text color: 'white' or 'black' (optional)")
-	rootCmd.Flags().StringVarP(&fontName, "font", "f", "sans", "font type: 'sans' or 'line' (optional)")
 	rootCmd.Flags().BoolVar(&gopher, "gopher", false, "embed gopher image instead of text (optional)")
 }
 
@@ -83,16 +79,5 @@ func main() {
 	if err := rootCmd.Execute(); err != nil {
 		fmt.Println(err)
 		os.Exit(1)
-	}
-}
-
-func getFont(fontName string) object.Font {
-	switch fontName {
-	case "line":
-		return object.LINESeedJP
-	case "sans":
-		return object.NotoSansMono
-	default:
-		return object.NotoSansMono
 	}
 }

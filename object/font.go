@@ -12,9 +12,6 @@ type Font []byte
 var (
 	//go:embed data/NotoSansMono-Bold.otf
 	NotoSansMono Font
-
-	//go:embed data/LINESeedJP_OTF_Bd.otf
-	LINESeedJP Font
 )
 
 func (f Font) FontFace(size float64) (font.Face, error) {

@@ -16,7 +16,7 @@ go install github.com/tMinamiii/lgtm@latest
 ```sh
 lgtm --help
 
-LGTM is a CLI tool that embeds custom text on images with customizable colors and fonts.
+LGTM is a CLI tool that embeds custom text on images with customizable colors.
 It can also embed a gopher image and outputs the result as a JPEG file.
 By default, it embeds "LGTM" as main text and "Looks Good To Me" as sub-text.
 You can customize both using the --text and --sub-text flags.
@@ -26,7 +26,6 @@ Usage:
 
 Flags:
   -c, --color string      text color: 'white' or 'black' (optional) (default "white")
-  -f, --font string       font type: 'sans' or 'line' (optional) (default "sans")
       --gopher            embed gopher image instead of text (optional)
   -h, --help              help for lgtm
   -i, --input string      input image path (required)
@@ -52,8 +51,8 @@ lgtm -i image.jpeg -s "Custom subtitle"
 # With both custom main and sub-text
 lgtm -i image.jpeg -t "Hello" -s "World"
 
-# With custom color and font
-lgtm -i image.jpeg -c black -f line -t "Custom Text" -s "Custom Sub"
+# With custom color
+lgtm -i image.jpeg -c black -t "Custom Text" -s "Custom Sub"
 
 # With custom output path
 lgtm -i image.jpeg -o output.jpg -t "My Text" -s "My Subtitle"
@@ -94,14 +93,6 @@ The Go gopher was designed by Renee French. (http://reneefrench.blogspot.com/)
 The design is licensed under the Creative Commons 3.0 Attributions license.
 Read this article for more details: https://blog.golang.org/gopher
 
-
-### About LINE Seed Licensing
-
-All content of LINE Seed is copyrighted material owned by LINE Corp.
-All typefaces are released under free, open source license.
-You can use them for any personal or commercial purpose.
-However, the software font files themselves cannot be sold by the other parties other than LINE Corp.
-For commercial use, we highly recommend to include attribution in product or service.
 
 ### About Noto font
 
