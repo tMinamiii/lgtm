@@ -14,18 +14,21 @@ const (
 	flagColor  = "c"
 	flagFont   = "f"
 	flagGopher = "gopher"
+	flagOutput = "o"
 )
 
 func main() {
 	color := flag.String("c", "white", "color 'white' or 'black'")
 	fontName := flag.String("f", "sans", "sans, line")
 	gopher := flag.Bool("gopher", false, "embed gopher")
+	output := flag.String("o", "", "output file path")
 	flag.Parse()
 
-	path := path()
+	inputPath := path()
+	outputPath := *output
 	if *gopher {
 		d := drawer.NewGopherDrawer()
-		if err := d.Draw(path); err != nil {
+		if err := d.Draw(inputPath, outputPath); err != nil {
 			log.Fatal(err)
 			os.Exit(1)
 		}
@@ -42,7 +45,7 @@ func main() {
 	sub := object.NewText(object.DefaultSubText, font, object.MessageTypeSub, textColor)
 
 	d := drawer.NewTextDrawer(main, sub)
-	if err := d.Draw(path); err != nil {
+	if err := d.Draw(inputPath, outputPath); err != nil {
 		log.Fatal(err)
 		os.Exit(1)
 	}

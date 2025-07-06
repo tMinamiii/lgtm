@@ -1,6 +1,6 @@
 module github.com/tMinamiii/lgtm
 
-go 1.22.3
+go 1.24.4
 
 require (
 	github.com/fogleman/gg v1.3.0

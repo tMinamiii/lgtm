@@ -20,16 +20,16 @@ func NewGopherDrawer() Drawer {
 	return &GopherDrawer{}
 }
 
-func (t *GopherDrawer) Draw(path string) error {
-	ext, err := t.extension(path)
+func (t *GopherDrawer) Draw(inputPath, outputPath string) error {
+	ext, err := t.extension(inputPath)
 	if err != nil {
 		return err
 	}
 
 	if ext == "gif" {
-		return t.drawOnGIF(path)
+		return t.drawOnGIF(inputPath, outputPath)
 	}
-	return t.drawOnImage(path, ext)
+	return t.drawOnImage(inputPath, outputPath, ext)
 }
 
 func (t *GopherDrawer) extension(path string) (string, error) {
@@ -46,15 +46,18 @@ func (t *GopherDrawer) extension(path string) (string, error) {
 	return format, nil
 }
 
-func (t *GopherDrawer) newFilename(path, ext string) string {
-	filename := filepath.Base(path)
+func (t *GopherDrawer) newFilename(inputPath, outputPath, ext string) string {
+	if outputPath != "" {
+		return outputPath
+	}
+	filename := filepath.Base(inputPath)
 	name := strings.Split(filename, ".")[0]
 	suffix := "gopher"
 	return fmt.Sprintf("%s-%s.%s", name, suffix, ext)
 }
 
-func (t *GopherDrawer) drawOnGIF(path string) error {
-	file, err := os.Open(path)
+func (t *GopherDrawer) drawOnGIF(inputPath, outputPath string) error {
+	file, err := os.Open(inputPath)
 	if err != nil {
 		return err
 	}
@@ -84,7 +87,7 @@ func (t *GopherDrawer) drawOnGIF(path string) error {
 	}
 	orgGif.Image = newImage
 
-	out, err := os.Create(t.newFilename(path, "gif"))
+	out, err := os.Create(t.newFilename(inputPath, outputPath, "gif"))
 	if err != nil {
 		return err
 	}
@@ -97,8 +100,8 @@ func (t *GopherDrawer) drawOnGIF(path string) error {
 	return nil
 }
 
-func (t *GopherDrawer) drawOnImage(path, ext string) error {
-	img, err := imaging.Open(path, imaging.AutoOrientation(true))
+func (t *GopherDrawer) drawOnImage(inputPath, outputPath, ext string) error {
+	img, err := imaging.Open(inputPath, imaging.AutoOrientation(true))
 	if err != nil {
 		return err
 	}
@@ -108,7 +111,7 @@ func (t *GopherDrawer) drawOnImage(path, ext string) error {
 		return err
 	}
 
-	if err := imaging.Save(img, t.newFilename(path, ext)); err != nil {
+	if err := imaging.Save(img, t.newFilename(inputPath, outputPath, ext)); err != nil {
 		return err
 	}
 
