@@ -2,8 +2,6 @@
 
 # lgtm
 
-https://img.shields.io/badge/Code%20Coverage-83%25-success?style=flat
-
 lgtm embeds `LGTM` string on an image.
 
 ![lunch-lgtm](https://user-images.githubusercontent.com/31730505/194919314-fc3b9fb9-fd47-46bf-a91a-2d148caf50b3.jpg)
