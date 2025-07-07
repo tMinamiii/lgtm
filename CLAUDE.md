@@ -137,3 +137,6 @@ The pipeline runs on every push to the main branch and automatically updates tes
 
 - プロジェクトルートに画像を生成してはいけない
 - ビルド成果物は削除する
+- YAGNI（You Aren't Gonna Need It）：今必要じゃない機能は作らない
+- DRY（Don't Repeat Yourself）：同じコードを繰り返さない
+- KISS（Keep It Simple Stupid）：シンプルに保つ
