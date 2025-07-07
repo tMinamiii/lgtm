@@ -1,17 +1,25 @@
 # lgtm
 ![Coverage](https://img.shields.io/badge/Coverage-70.0%25-brightgreen)
 
-lgtm embeds `LGTM` string on an image.
+A Go library and CLI tool for embedding custom text on images. By default, it embeds "LGTM" (Looks Good To Me) on images, but you can customize the text, colors, and even embed a gopher image instead.
 
 ![lunch-lgtm](https://user-images.githubusercontent.com/31730505/194919314-fc3b9fb9-fd47-46bf-a91a-2d148caf50b3.jpg)
 
 ## Installation
 
+### CLI Tool
 ```sh
-go install github.com/tMinamiii/lgtm@latest
+go install github.com/tMinamiii/lgtm/cmd/lgtm@latest
+```
+
+### Go Library
+```sh
+go get github.com/tMinamiii/lgtm
 ```
 
 ## Usage
+
+### CLI Tool
 
 ```sh
 lgtm --help
@@ -34,7 +42,7 @@ Flags:
   -t, --text string       custom text to embed (optional, default: 'LGTM')
 ```
 
-### Examples
+#### CLI Examples
 
 Output `image-lgtm.jpeg` in the current directory when run below command.
 
@@ -60,6 +68,51 @@ lgtm -i image.jpeg -o output.jpg -t "My Text" -s "My Subtitle"
 # Gopher mode
 lgtm -i image.jpeg --gopher
 ```
+
+### Go Library
+
+You can also use lgtm as a Go library in your projects:
+
+```go
+package main
+
+import (
+    "github.com/tMinamiii/lgtm"
+)
+
+func main() {
+    // Text mode with custom text
+    mainText := lgtm.NewMainText("Hello", lgtm.TextColorWhite)
+    subText := lgtm.NewSubText("World", lgtm.TextColorWhite)
+    drawer := lgtm.NewTextDrawer(mainText, subText, "input.jpg", "output.jpg")
+    if err := drawer.Draw(); err != nil {
+        panic(err)
+    }
+
+    // Gopher mode
+    gopherDrawer := lgtm.NewGopherDrawer("input.jpg", "output-gopher.jpg")
+    if err := gopherDrawer.Draw(); err != nil {
+        panic(err)
+    }
+}
+```
+
+#### Available Types and Functions
+
+- `NewMainText(text string, color TextColor) *Text` - Creates main text with specified color
+- `NewSubText(text string, color TextColor) *Text` - Creates sub-text with specified color
+- `NewTextDrawer(main, sub *Text, inputPath, outputPath string) Drawer` - Creates text drawer
+- `NewGopherDrawer(inputPath, outputPath string) Drawer` - Creates gopher drawer
+- `TextColorWhite` and `TextColorBlack` - Available text colors
+- `DefaultMainText` and `DefaultSubText` - Default text constants
+
+#### Supported Features
+
+- **Image Formats**: JPEG, PNG, GIF (including animated GIFs)
+- **Text Colors**: White and black with automatic contrast
+- **Font**: Embedded NotoSansMono-Bold for consistent rendering
+- **Auto-sizing**: Automatic font size calculation based on image dimensions
+- **Flexible Output**: Custom output paths or auto-generated filenames
 
 ## License
 

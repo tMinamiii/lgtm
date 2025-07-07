@@ -137,8 +137,8 @@ func TestRootCmd_FlagParsing(t *testing.T) {
 			var testGopher bool
 
 			cmd := &cobra.Command{
-				Use:   "lgtm [flags]",
-				Args:  cobra.NoArgs,
+				Use:  "lgtm [flags]",
+				Args: cobra.NoArgs,
 				RunE: func(cmd *cobra.Command, args []string) error {
 					return nil // Just test flag parsing
 				},
@@ -223,15 +223,15 @@ func TestRootCmd_Integration(t *testing.T) {
 			cmd.SetErr(&buf)
 
 			err := cmd.Execute()
-			
+
 			// For integration test, we expect it might fail due to missing lgtm-core
 			// but we can still test the command structure
 			if err != nil {
 				// Check if it's a missing module error or similar
 				errStr := err.Error()
-				if strings.Contains(errStr, "no such file") || 
-				   strings.Contains(errStr, "cannot find") ||
-				   strings.Contains(errStr, "module") {
+				if strings.Contains(errStr, "no such file") ||
+					strings.Contains(errStr, "cannot find") ||
+					strings.Contains(errStr, "module") {
 					t.Logf("Skipping actual execution due to missing dependencies: %v", err)
 					return
 				}
@@ -319,17 +319,17 @@ You can customize both using the --text and --sub-text flags.`,
 		RunE: func(cmd *cobra.Command, args []string) error {
 			// For testing, we'll mock the actual functionality
 			// In real usage, this would call the lgtm-core library
-			
+
 			// Basic validation
 			if testInputPath == "" {
 				return cmd.Help()
 			}
-			
+
 			// Check if input file exists
 			if _, err := os.Stat(testInputPath); os.IsNotExist(err) {
 				return err
 			}
-			
+
 			// Create dummy output file for testing
 			if testOutputPath != "" {
 				// Create parent directory if it doesn't exist
@@ -337,18 +337,18 @@ You can customize both using the --text and --sub-text flags.`,
 				if err := os.MkdirAll(dir, 0755); err != nil {
 					return err
 				}
-				
+
 				file, err := os.Create(testOutputPath)
 				if err != nil {
 					return err
 				}
 				defer file.Close()
-				
+
 				// Write minimal dummy content
 				_, err = file.WriteString("dummy lgtm output")
 				return err
 			}
-			
+
 			return nil
 		},
 	}
@@ -380,33 +380,33 @@ func TestMain_Function(t *testing.T) {
 	// This test ensures main function exists and can be called
 	// We can't easily test it directly due to os.Exit() call
 	// but we can test that it compiles and the command structure is correct
-	
+
 	assert.NotNil(t, rootCmd)
 	assert.Equal(t, "lgtm [flags]", rootCmd.Use)
 	assert.Contains(t, rootCmd.Long, "LGTM is a CLI tool")
-	
+
 	// Test that all expected flags are defined
 	inputFlag := rootCmd.Flags().Lookup("input")
 	assert.NotNil(t, inputFlag)
 	assert.Equal(t, "i", inputFlag.Shorthand)
-	
+
 	outputFlag := rootCmd.Flags().Lookup("output")
 	assert.NotNil(t, outputFlag)
 	assert.Equal(t, "o", outputFlag.Shorthand)
-	
+
 	textFlag := rootCmd.Flags().Lookup("text")
 	assert.NotNil(t, textFlag)
 	assert.Equal(t, "t", textFlag.Shorthand)
-	
+
 	subTextFlag := rootCmd.Flags().Lookup("sub-text")
 	assert.NotNil(t, subTextFlag)
 	assert.Equal(t, "s", subTextFlag.Shorthand)
-	
+
 	colorFlag := rootCmd.Flags().Lookup("color")
 	assert.NotNil(t, colorFlag)
 	assert.Equal(t, "c", colorFlag.Shorthand)
 	assert.Equal(t, "white", colorFlag.DefValue)
-	
+
 	gopherFlag := rootCmd.Flags().Lookup("gopher")
 	assert.NotNil(t, gopherFlag)
 	assert.Equal(t, "false", gopherFlag.DefValue)
@@ -421,63 +421,63 @@ func TestRootCmd_RunLogic(t *testing.T) {
 	}
 
 	tests := []struct {
-		name                string
-		args                []string
-		expectedColor       string
-		expectedGopher      bool
-		expectedInputPath   string
-		expectedOutputPath  string
-		expectedCustomText  string
+		name                  string
+		args                  []string
+		expectedColor         string
+		expectedGopher        bool
+		expectedInputPath     string
+		expectedOutputPath    string
+		expectedCustomText    string
 		expectedCustomSubText string
 	}{
 		{
-			name: "text_mode_white_default",
-			args: []string{"-i", testImagePath},
-			expectedColor: "white",
-			expectedGopher: false,
-			expectedInputPath: testImagePath,
-			expectedOutputPath: "",
-			expectedCustomText: "",
+			name:                  "text_mode_white_default",
+			args:                  []string{"-i", testImagePath},
+			expectedColor:         "white",
+			expectedGopher:        false,
+			expectedInputPath:     testImagePath,
+			expectedOutputPath:    "",
+			expectedCustomText:    "",
 			expectedCustomSubText: "",
 		},
 		{
-			name: "text_mode_black_color",
-			args: []string{"-i", testImagePath, "-c", "black"},
-			expectedColor: "black",
-			expectedGopher: false,
-			expectedInputPath: testImagePath,
-			expectedOutputPath: "",
-			expectedCustomText: "",
+			name:                  "text_mode_black_color",
+			args:                  []string{"-i", testImagePath, "-c", "black"},
+			expectedColor:         "black",
+			expectedGopher:        false,
+			expectedInputPath:     testImagePath,
+			expectedOutputPath:    "",
+			expectedCustomText:    "",
 			expectedCustomSubText: "",
 		},
 		{
-			name: "text_mode_custom_text",
-			args: []string{"-i", testImagePath, "-t", "Hello", "-s", "World"},
-			expectedColor: "white",
-			expectedGopher: false,
-			expectedInputPath: testImagePath,
-			expectedOutputPath: "",
-			expectedCustomText: "Hello",
+			name:                  "text_mode_custom_text",
+			args:                  []string{"-i", testImagePath, "-t", "Hello", "-s", "World"},
+			expectedColor:         "white",
+			expectedGopher:        false,
+			expectedInputPath:     testImagePath,
+			expectedOutputPath:    "",
+			expectedCustomText:    "Hello",
 			expectedCustomSubText: "World",
 		},
 		{
-			name: "gopher_mode",
-			args: []string{"-i", testImagePath, "--gopher"},
-			expectedColor: "white",
-			expectedGopher: true,
-			expectedInputPath: testImagePath,
-			expectedOutputPath: "",
-			expectedCustomText: "",
+			name:                  "gopher_mode",
+			args:                  []string{"-i", testImagePath, "--gopher"},
+			expectedColor:         "white",
+			expectedGopher:        true,
+			expectedInputPath:     testImagePath,
+			expectedOutputPath:    "",
+			expectedCustomText:    "",
 			expectedCustomSubText: "",
 		},
 		{
-			name: "with_output_path",
-			args: []string{"-i", testImagePath, "-o", "output.jpg"},
-			expectedColor: "white",
-			expectedGopher: false,
-			expectedInputPath: testImagePath,
-			expectedOutputPath: "output.jpg",
-			expectedCustomText: "",
+			name:                  "with_output_path",
+			args:                  []string{"-i", testImagePath, "-o", "output.jpg"},
+			expectedColor:         "white",
+			expectedGopher:        false,
+			expectedInputPath:     testImagePath,
+			expectedOutputPath:    "output.jpg",
+			expectedCustomText:    "",
 			expectedCustomSubText: "",
 		},
 	}
@@ -511,7 +511,7 @@ You can customize both using the --text and --sub-text flags.`,
 						assert.True(t, gopher)
 						assert.Equal(t, tt.expectedInputPath, inputPath)
 						assert.Equal(t, tt.expectedOutputPath, outputPath)
-						
+
 						// Return early to simulate gopher mode
 						return nil
 					}
@@ -525,7 +525,7 @@ You can customize both using the --text and --sub-text flags.`,
 					assert.Equal(t, tt.expectedColor, expectedTextColor)
 
 					// Test custom text logic
-					expectedMainText := "LGTM" // lgtm.DefaultMainText equivalent
+					expectedMainText := "LGTM"            // lgtm.DefaultMainText equivalent
 					expectedSubText := "Looks Good To Me" // lgtm.DefaultSubText equivalent
 
 					if customText != "" {
@@ -570,7 +570,7 @@ You can customize both using the --text and --sub-text flags.`,
 
 			// Execute and verify the variables are set correctly
 			err := cmd.Execute()
-			
+
 			// The test should succeed since we're not calling lgtm-core
 			assert.NoError(t, err)
 
@@ -602,7 +602,7 @@ func TestRootCmd_ActualExecution(t *testing.T) {
 			args: []string{"-i", testImagePath, "-t", "TEST", "-s", "ACTUAL"},
 		},
 		{
-			name: "actual_rootCmd_gopher_mode", 
+			name: "actual_rootCmd_gopher_mode",
 			args: []string{"-i", testImagePath, "--gopher"},
 		},
 	}

@@ -34,13 +34,14 @@ jobs:
               with:
                 files: |
                   README.md
+                  testdata/results/
 
             - name: Commit changes
               if: steps.verify-changed-files.outputs.files_changed == 'true'
               run: |
                 git config --local user.email "action@github.com"
                 git config --local user.name "GitHub Action"
-                git add README.md
+                git add README.md testdata/results/
                 git commit -m "chore: Updated coverage badge and LGTM test results."
 
             - name: Push changes
