@@ -132,3 +132,8 @@ The GitHub Actions workflow (`/.github/workflows/build.yml`) automatically:
 4. Commits and pushes changes back to the repository (including test result images)
 
 The pipeline runs on every push to the main branch and automatically updates testdata/results/ with new test outputs.
+
+## ルール
+
+- プロジェクトルートに画像を生成してはいけない
+- ビルド成果物は削除する
