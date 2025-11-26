@@ -1,5 +1,5 @@
 # lgtm
-![Coverage](https://img.shields.io/badge/Coverage-43.1%25-yellow)
+![Coverage](https://img.shields.io/badge/Coverage-42.9%25-yellow)
 
 A Go library and CLI tool for embedding custom text on images. By default, it embeds "LGTM" (Looks Good To Me) on images, but you can customize the text, colors, and even embed a gopher image instead.
 
