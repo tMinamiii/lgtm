@@ -13,7 +13,7 @@ for img in testdata/images/*.jpg; do
     if [ -f "$img" ]; then
         output_file="testdata/results/result_$(basename "$img")"
         echo "Processing: $img -> $output_file"
-        go run ./cmd/lgtm/main.go -i "$img" -o "$output_file" --conc
+        go run ./cmd/lgtm/main.go -i "$img" -o "$output_file" -l
     fi
 done
 

@@ -28,7 +28,7 @@ func NewConcentrationLinesDrawer(inputPath, outputPath string) Drawer {
 	return &ConcentrationLinesDrawer{
 		InputPath:  inputPath,
 		OutputPath: outputPath,
-		LineCount:  120,         // デフォルトの線の本数（密度を上げる）
+		LineCount:  200,         // デフォルトの線の本数（密度をさらに上げる）
 		LineColor:  color.Black, // デフォルトは黒
 	}
 }
@@ -142,18 +142,22 @@ func (c *ConcentrationLinesDrawer) drawConcentrationLines(img image.Image) image
 	// ランダムシードを初期化
 	rng := rand.New(rand.NewSource(time.Now().UnixNano()))
 
-	angleStep := 2 * math.Pi / float64(c.LineCount)
+	// 角度をランダムに生成
+	angles := make([]float64, c.LineCount)
+	for i := 0; i < c.LineCount; i++ {
+		angles[i] = rng.Float64() * 2 * math.Pi
+	}
 
 	for i := 0; i < c.LineCount; i++ {
-		angle := float64(i) * angleStep
+		angle := angles[i]
 
-		// 外側は必ず画像の端から開始（maxDistance）
-		outerDistance := maxDistance * 0.6 // 画像の端
+		// 外側は必ず画像の端から（maxDistanceを使用）
+		outerDistance := maxDistance * 0.6 // 画像の端まで到達
 		outerX := centerX + math.Cos(angle)*outerDistance
 		outerY := centerY + math.Sin(angle)*outerDistance
 
-		// 内側の尖った点（中心に近い）- ランダム幅をさらに小さく
-		innerDistanceRatio := 0.18 + rng.Float64()*0.02 // 0.18 ~ 0.20 (幅をさらに狭く)
+		// 内側の長さをランダムに（0.15 ~ 0.35の範囲で変化）
+		innerDistanceRatio := 0.15 + rng.Float64()*0.2 // 0.15 ~ 0.35
 		innerDistance := maxDistance * innerDistanceRatio
 		innerX := centerX + math.Cos(angle)*innerDistance
 		innerY := centerY + math.Sin(angle)*innerDistance

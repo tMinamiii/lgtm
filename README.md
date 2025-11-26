@@ -33,11 +33,11 @@ Usage:
   lgtm [flags]
 
 Flags:
-  -c, --color string          text color: 'white' or 'black' (optional) (default "white")
-      --concentration-lines   add concentration lines to the image (optional)
-      --gopher                embed gopher image instead of text (optional)
-  -h, --help                  help for lgtm
-  -i, --input string          input image path (required)
+  -c, --color string              text color: 'white' or 'black' (optional) (default "white")
+  -l, --concentration-lines       add concentration lines to the image (optional)
+      --gopher                    embed gopher image instead of text (optional)
+  -h, --help                      help for lgtm
+  -i, --input string              input image path (required)
   -o, --output string         output file path (optional, default: current directory with auto-generated filename)
   -s, --sub-text string       custom sub-text to embed (optional, default: 'Looks Good To Me')
   -t, --text string           custom text to embed (optional, default: 'LGTM')
@@ -71,6 +71,8 @@ lgtm -i image.jpeg --gopher
 
 # Concentration lines mode (adds manga-style concentration lines)
 lgtm -i image.jpeg --concentration-lines
+# or use the short form:
+lgtm -i image.jpeg -l
 ```
 
 ### Go Library

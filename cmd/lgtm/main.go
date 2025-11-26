@@ -101,7 +101,7 @@ func init() {
 	rootCmd.Flags().StringVarP(&customSubText, "sub-text", "s", "", "custom sub-text to embed (optional, default: 'Looks Good To Me')")
 	rootCmd.Flags().StringVarP(&color, "color", "c", "white", "text color: 'white' or 'black' (optional)")
 	rootCmd.Flags().BoolVar(&gopher, "gopher", false, "embed gopher image instead of text (optional)")
-	rootCmd.Flags().BoolVar(&concentrationLines, "conc", false, "add concentration lines to the image (optional)")
+	rootCmd.Flags().BoolVarP(&concentrationLines, "concentration-lines", "l", false, "add concentration lines to the image (optional)")
 }
 
 func main() {
