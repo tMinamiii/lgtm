@@ -1,5 +1,7 @@
 # Changelog
 
+## [v0.1.42](https://github.com/tMinamiii/lgtm/compare/v0.1.41...v0.1.42) - 2025-11-26
+
 ## [v0.1.41](https://github.com/tMinamiii/lgtm/compare/v0.1.40...v0.1.41) - 2025-11-26
 
 ## [v0.1.40](https://github.com/tMinamiii/lgtm/compare/v0.1.39...v0.1.40) - 2025-11-26
