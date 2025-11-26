@@ -13,7 +13,6 @@ require (
 	github.com/disintegration/imaging v1.6.2
 	github.com/spf13/cobra v1.9.1
 	github.com/stretchr/testify v1.8.1
-	github.com/tMinamiii/lgtm-core v0.0.1
 )
 
 require (

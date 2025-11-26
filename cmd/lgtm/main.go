@@ -6,7 +6,7 @@ import (
 	"os"
 
 	"github.com/spf13/cobra"
-	"github.com/tMinamiii/lgtm-core"
+	"github.com/tMinamiii/lgtm"
 )
 
 var (
