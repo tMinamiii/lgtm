@@ -25,7 +25,7 @@ go get github.com/tMinamiii/lgtm
 lgtm --help
 
 LGTM is a CLI tool that embeds custom text on images with customizable colors.
-It can also embed a gopher image and outputs the result as a JPEG file.
+It can also embed a gopher image or concentration lines and outputs the result as a JPEG file.
 By default, it embeds "LGTM" as main text and "Looks Good To Me" as sub-text.
 You can customize both using the --text and --sub-text flags.
 
@@ -33,13 +33,14 @@ Usage:
   lgtm [flags]
 
 Flags:
-  -c, --color string      text color: 'white' or 'black' (optional) (default "white")
-      --gopher            embed gopher image instead of text (optional)
-  -h, --help              help for lgtm
-  -i, --input string      input image path (required)
-  -o, --output string     output file path (optional, default: current directory with auto-generated filename)
-  -s, --sub-text string   custom sub-text to embed (optional, default: 'Looks Good To Me')
-  -t, --text string       custom text to embed (optional, default: 'LGTM')
+  -c, --color string          text color: 'white' or 'black' (optional) (default "white")
+      --concentration-lines   add concentration lines to the image (optional)
+      --gopher                embed gopher image instead of text (optional)
+  -h, --help                  help for lgtm
+  -i, --input string          input image path (required)
+  -o, --output string         output file path (optional, default: current directory with auto-generated filename)
+  -s, --sub-text string       custom sub-text to embed (optional, default: 'Looks Good To Me')
+  -t, --text string           custom text to embed (optional, default: 'LGTM')
 ```
 
 #### CLI Examples
@@ -67,6 +68,9 @@ lgtm -i image.jpeg -o output.jpg -t "My Text" -s "My Subtitle"
 
 # Gopher mode
 lgtm -i image.jpeg --gopher
+
+# Concentration lines mode (adds manga-style concentration lines)
+lgtm -i image.jpeg --concentration-lines
 ```
 
 ### Go Library
@@ -86,19 +90,26 @@ func main() {
     subText := lgtm.NewSubText("World", lgtm.TextColorWhite)
     drawer := lgtm.NewTextDrawer(mainText, subText, "input.jpg", "output.jpg")
     if err := drawer.Draw(); err != nil {
-        panic(err)
-    }
-
     // Gopher mode
     gopherDrawer := lgtm.NewGopherDrawer("input.jpg", "output-gopher.jpg")
     if err := gopherDrawer.Draw(); err != nil {
         panic(err)
     }
-}
-```
 
-#### Available Types and Functions
-
+    // Concentration lines mode
+    concentrationDrawer := lgtm.NewConcentrationLinesDrawer("input.jpg", "output-concentration.jpg")
+    if err := concentrationDrawer.Draw(); err != nil {
+        panic(err)
+    }
+}   if err := gopherDrawer.Draw(); err != nil {
+        panic(err)
+- `NewMainText(text string, color TextColor) *Text` - Creates main text with specified color
+- `NewSubText(text string, color TextColor) *Text` - Creates sub-text with specified color
+- `NewTextDrawer(main, sub *Text, inputPath, outputPath string) Drawer` - Creates text drawer
+- `NewGopherDrawer(inputPath, outputPath string) Drawer` - Creates gopher drawer
+- `NewConcentrationLinesDrawer(inputPath, outputPath string) Drawer` - Creates concentration lines drawer
+- `TextColorWhite` and `TextColorBlack` - Available text colors
+- `DefaultMainText` and `DefaultSubText` - Default text constants
 - `NewMainText(text string, color TextColor) *Text` - Creates main text with specified color
 - `NewSubText(text string, color TextColor) *Text` - Creates sub-text with specified color
 - `NewTextDrawer(main, sub *Text, inputPath, outputPath string) Drawer` - Creates text drawer

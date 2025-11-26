@@ -10,31 +10,55 @@ import (
 )
 
 var (
-	color         string
-	gopher        bool
-	inputPath     string
-	outputPath    string
-	customText    string
-	customSubText string
+	color              string
+	gopher             bool
+	concentrationLines bool
+	inputPath          string
+	outputPath         string
+	customText         string
+	customSubText      string
 )
 
 var rootCmd = &cobra.Command{
 	Use:   "lgtm [flags]",
 	Short: "Embed custom text or gopher image on images",
 	Long: `LGTM is a CLI tool that embeds custom text on images with customizable colors.
-It can also embed a gopher image and outputs the result as a JPEG file.
+It can also embed a gopher image or concentration lines and outputs the result as a JPEG file.
 By default, it embeds "LGTM" as main text and "Looks Good To Me" as sub-text.
 You can customize both using the --text and --sub-text flags.`,
 	Args: cobra.NoArgs,
 	Run: func(cmd *cobra.Command, args []string) {
-		if gopher {
-			d := lgtm.NewGopherDrawer(inputPath, outputPath)
+		currentInput := inputPath
+		tempOutput := ""
+
+		// 集中線を先に描画（指定されている場合）
+		if concentrationLines {
+			if outputPath == "" {
+				tempOutput = inputPath + ".tmp.jpg"
+			} else {
+				tempOutput = outputPath + ".tmp.jpg"
+			}
+			d := lgtm.NewConcentrationLinesDrawer(currentInput, tempOutput)
 			if err := d.Draw(); err != nil {
 				log.Fatal(err)
+			}
+			currentInput = tempOutput
+		}
+
+		// Gopherモードの場合
+		if gopher {
+			d := lgtm.NewGopherDrawer(currentInput, outputPath)
+			if err := d.Draw(); err != nil {
+				log.Fatal(err)
+			}
+			// 一時ファイルを削除
+			if tempOutput != "" {
+				os.Remove(tempOutput)
 			}
 			return
 		}
 
+		// テキストを描画（デフォルト動作または集中線の後に描画）
 		textColor := lgtm.TextColorWhite
 		if color == "black" {
 			textColor = lgtm.TextColorBlack
@@ -54,9 +78,14 @@ You can customize both using the --text and --sub-text flags.`,
 		main := lgtm.NewMainText(mainText, textColor)
 		sub := lgtm.NewSubText(subText, textColor)
 
-		d := lgtm.NewTextDrawer(main, sub, inputPath, outputPath)
+		d := lgtm.NewTextDrawer(main, sub, currentInput, outputPath)
 		if err := d.Draw(); err != nil {
 			log.Fatal(err)
+		}
+
+		// 一時ファイルを削除
+		if tempOutput != "" {
+			os.Remove(tempOutput)
 		}
 	},
 }
@@ -72,6 +101,7 @@ func init() {
 	rootCmd.Flags().StringVarP(&customSubText, "sub-text", "s", "", "custom sub-text to embed (optional, default: 'Looks Good To Me')")
 	rootCmd.Flags().StringVarP(&color, "color", "c", "white", "text color: 'white' or 'black' (optional)")
 	rootCmd.Flags().BoolVar(&gopher, "gopher", false, "embed gopher image instead of text (optional)")
+	rootCmd.Flags().BoolVar(&concentrationLines, "conc", false, "add concentration lines to the image (optional)")
 }
 
 func main() {
