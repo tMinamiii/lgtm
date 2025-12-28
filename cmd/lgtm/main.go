@@ -31,6 +31,12 @@ You can customize both using the --text and --sub-text flags.`,
 		currentInput := inputPath
 		tempOutput := ""
 
+		// テキスト色を決定
+		textColor := lgtm.TextColorWhite
+		if color == "black" {
+			textColor = lgtm.TextColorBlack
+		}
+
 		// 集中線を先に描画（指定されている場合）
 		if concentrationLines {
 			if outputPath == "" {
@@ -39,6 +45,10 @@ You can customize both using the --text and --sub-text flags.`,
 				tempOutput = outputPath + ".tmp.jpg"
 			}
 			d := lgtm.NewConcentrationLinesDrawer(currentInput, tempOutput)
+			// 集中線の色をテキスト色と同じに設定
+			if drawer, ok := d.(*lgtm.ConcentrationLinesDrawer); ok {
+				drawer.SetLineColor(textColor.Gray16())
+			}
 			if err := d.Draw(); err != nil {
 				log.Fatal(err)
 			}
@@ -59,11 +69,6 @@ You can customize both using the --text and --sub-text flags.`,
 		}
 
 		// テキストを描画（デフォルト動作または集中線の後に描画）
-		textColor := lgtm.TextColorWhite
-		if color == "black" {
-			textColor = lgtm.TextColorBlack
-		}
-
 		mainText := lgtm.DefaultMainText
 		subText := lgtm.DefaultSubText
 

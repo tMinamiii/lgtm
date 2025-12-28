@@ -33,6 +33,10 @@ func NewConcentrationLinesDrawer(inputPath, outputPath string) Drawer {
 	}
 }
 
+func (c *ConcentrationLinesDrawer) SetLineColor(clr color.Color) {
+	c.LineColor = clr
+}
+
 func (c *ConcentrationLinesDrawer) Draw() error {
 	ext, err := c.extension(c.InputPath)
 	if err != nil {
