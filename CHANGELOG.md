@@ -1,5 +1,7 @@
 # Changelog
 
+## [v0.1.44](https://github.com/tMinamiii/lgtm/compare/v0.1.43...v0.1.44) - 2025-12-28
+
 ## [v0.1.43](https://github.com/tMinamiii/lgtm/compare/v0.1.42...v0.1.43) - 2025-12-28
 - chore: image update by @tMinamiii in https://github.com/tMinamiii/lgtm/pull/38
 
